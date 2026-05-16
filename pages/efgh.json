@@ -1,0 +1,53 @@
+{
+  "id": "efgh",
+  "title": "EFGH",
+  "subtitle": "EFGH Research Institute / 军械·药品·生物研究复合体 —— 阿尔法战区的奠基者",
+  "archiveId": "AZ-ORG-005",
+  "clearance": "L3",
+  "lastUpdated": "2031-09-24",
+  "tags": ["组织", "历史", "EFGH", "L3", "研究机构", "被收购"],
+  "contentFile": "pages/efgh.md",
+  "banner": {
+    "level": "L3",
+    "text": "该文档需 L3 及以上保密权限访问。\n涉及已注销实体的债务与资产追溯。",
+    "meta": "EPUN-WAR-ARCH\nSERIES AZ-ORG",
+    "color": "amber"
+  },
+  "infobox": {
+    "title": "Entity Profile",
+    "fields": [
+      { "label": "编号", "value": "AZ-ORG-005" },
+      { "label": "全称", "value": "EFGH Research Institute" },
+      { "label": "曾用名", "value": "无界生科（2025-2027）" },
+      { "label": "分类", "value": "军械 / 药品 / 生物研究复合体" },
+      { "label": "状态", "value": "<span class='redacted-text'>已注销（被收购）</span>" },
+      { "label": "成立", "value": "[redacted]████[/redacted]" },
+      { "label": "注销", "value": "2028年（DeWorld收购）" },
+      { "label": "总部", "value": "<span class='redacted'>███████</span>" },
+      { "label": "主要资产", "value": "28枚核弹 / 地下井网 / 生物实验室" },
+      { "label": "债务峰值", "value": "430亿（2026年）" },
+      { "label": "后继实体", "value": "EFGH-ALPHA（DeWorld控制）" },
+      { "label": "关联人物", "value": "Mr.Li（前首席架构师）" }
+    ]
+  },
+  "categories": ["entities", "organizations"],
+  "relations": {
+    "parent": null,
+    "subordinates": ["efgh-ordnance", "efgh-bio", "efgh-pharma"],
+    "associates": [
+      { "id": "deworld", "type": "被收购", "description": "2028年以1美元+债务承接完成收购" },
+      { "id": "sr-lab", "type": "合作", "description": "非正式技术交换与人员流动" },
+      { "id": "efgh-alpha", "type": "后继", "description": "原基地被改造为时晶农场" }
+    ]
+  },
+  "autoGenerate": {
+    "breadcrumb": true,
+    "categoryNav": true,
+    "relatedPages": true
+  },
+  "metadata": {
+    "author": "EPUN战档司 · 资产追溯处",
+    "reviewer": "L3审核员",
+    "version": "1.0.0"
+  }
+}

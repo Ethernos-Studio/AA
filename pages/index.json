@@ -1,0 +1,45 @@
+{
+  "id": "index",
+  "title": "Alpha Zone",
+  "subtitle": "阿尔法战区",
+  "archiveId": "AZ-ROOT-000",
+  "clearance": "L1",
+  "lastUpdated": "2031-09-24",
+  "tags": ["首页", "索引", "档案库"],
+  "contentFile": "pages/index.md",
+  "banner": {
+    "level": "L1",
+    "text": "欢迎访问Alpha Zone。\n所有文档按保密等级分级，请确认您的访问权限。",
+    "meta": "EPUN-WAR-ARCH\nCENTRAL DATABASE",
+    "color": "blue"
+  },
+  "infobox": {
+    "title": "Information",
+    "fields": [
+      { "label": "游戏名称", "value": "Alpha Zone" },
+      { "label": "官方译名", "value": "阿尔法战区" },
+      { "label": "游戏类型", "value": "第一人称射击" },
+      { "label": "游戏平台", "value": "PC" },
+      { "label": "开发团队", "value": "Ethernos Studio" },
+      { "label": "制作人", "value": "dhjs0000" },
+      { "label": "音乐", "value": "Ethernos Studio" },
+      { "label": "引擎", "value": "Unity3D" }
+    ]
+  },
+  "categories": [],
+  "relations": {
+    "parent": null,
+    "subordinates": [],
+    "associates": []
+  },
+  "autoGenerate": {
+    "breadcrumb": false,
+    "categoryNav": false,
+    "relatedPages": false
+  },
+  "metadata": {
+    "author": "EPUN战档司",
+    "reviewer": "系统管理员",
+    "version": "1.0.0"
+  }
+}

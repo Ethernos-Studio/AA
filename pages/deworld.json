@@ -1,0 +1,49 @@
+{
+  "id": "deworld",
+  "title": "DeWorld",
+  "subtitle": "净化者 / 毁灭派 —— 以'净化即毁灭'为信条的反人类组织",
+  "archiveId": "AZ-ORG-002",
+  "clearance": "L4",
+  "lastUpdated": "2031-09-24",
+  "tags": ["组织", "敌对", "DeWorld", "L4", "时晶体", "归零装置"],
+  "contentFile": "pages/deworld.md",
+  "banner": {
+    "level": "L4",
+    "text": "该文档需 L4 及以上保密权限访问。\n任何非授权访问将触发[追踪协议]与[记忆清除程序]。",
+    "meta": "EPUN-WAR-ARCH\nSERIES AZ-ORG",
+    "color": "red"
+  },
+  "infobox": {
+    "title": "Entity Profile",
+    "fields": [
+      { "label": "编号", "value": "AZ-ORG-002" },
+      { "label": "分类", "value": "反人类极端组织 / 跨国军事复合体" },
+      { "label": "状态", "value": "<span class='highlight'>活跃（地下化）</span>" },
+      { "label": "成立", "value": "<span class='redacted'>无任何资料可表明其成立时间</span>" },
+      { "label": "核心信条", "value": "净化即毁灭" },
+      { "label": "已知资产", "value": "28枚核弹（11枚氢弹）/ EFGH研究机构 / 地下井网" },
+      { "label": "核心武器", "value": "<span class='redacted-text'>归零装置（Nullifier）</span>" },
+      { "label": "敌对", "value": "EPUN / WUN / 全人类" }
+    ]
+  },
+  "categories": ["entities", "organizations"],
+  "relations": {
+    "parent": null,
+    "subordinates": ["purifier-corps", "sr-lab-proxy"],
+    "associates": [
+      { "id": "epun", "type": "敌对", "description": "主要敌对超国家联合体" },
+      { "id": "efgh-alpha", "type": "控制", "description": "时晶农场与AI叛乱发生地" },
+      { "id": "sr-3", "type": "清洗", "description": "2030年11月30日武装突袭目标" }
+    ]
+  },
+  "autoGenerate": {
+    "breadcrumb": true,
+    "categoryNav": true,
+    "relatedPages": true
+  },
+  "metadata": {
+    "author": "EPUN战档司 · 黑域情报回收组",
+    "reviewer": "L4审核员",
+    "version": "1.0.0"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "sections": [
+    {
+      "title": "Navigation",
+      "items": [
+        { "type": "link", "id": "index", "title": "主站首页" },
+        { "type": "action", "title": "随机条目", "action": "random" }
+      ]
+    },
+    {
+      "title": "单体索引",
+      "items": [
+        { "type": "subheader", "title": "组织" },
+        { "type": "link", "id": "epun", "title": "EPUN" },
+        { "type": "link", "id": "deworld", "title": "DeWorld" },
+        { "type": "link", "id": "efgh", "title": "EFGH" },
+        { "type": "link", "id": "sr-lab", "title": "SR实验室" },
+        { "type": "link", "id": "wun", "title": "WUN" },
+        { "type": "subheader", "title": "地点" },
+        { "type": "link", "id": "alpha-zone", "title": "ALPHA ZONE" },
+        { "type": "link", "id": "efgh-alpha", "title": "EFGH-ALPHA" },
+        { "type": "locked", "title": "SR-3基地" },
+        { "type": "locked", "title": "迪纳科山" }
+      ]
+    },
+    {
+      "title": "Metadata",
+      "items": [
+        { "type": "subheader", "title": "系统状态: 在线" },
+        { "type": "subheader", "title": "最后更新：2026-05-17" },
+        { "type": "subheader", "title": "提示: 这是游戏《Alpha Zone》的Wiki页面，内容为虚拟架空世界观，与现实世界无关。"}
+      ]
+    }
+  ]
+}

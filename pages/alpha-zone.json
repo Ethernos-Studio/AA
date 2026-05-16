@@ -1,0 +1,52 @@
+{
+  "id": "alpha-zone",
+  "title": "ALPHA ZONE",
+  "subtitle": "阿尔法战区 / 黑域 —— 核废墟、极寒与百股流民的死亡地带",
+  "archiveId": "AZ-LOC-001",
+  "clearance": "L3",
+  "lastUpdated": "2031-09-24",
+  "tags": ["地点", "战区", "ALPHA ZONE", "L3", "核废墟", "黑域"],
+  "contentFile": "pages/alpha-zone.md",
+  "banner": {
+    "level": "L3",
+    "text": "该文档需 L3 及以上保密权限访问。\n涉及未主权区域与非法武装分布情报。",
+    "meta": "EPUN-WAR-ARCH\nSERIES AZ-LOC",
+    "color": "amber"
+  },
+  "infobox": {
+    "title": "Territory Profile",
+    "fields": [
+      { "label": "编号", "value": "AZ-LOC-001" },
+      { "label": "别名", "value": "阿尔法战区 / 黑域（Black Domain）" },
+      { "label": "状态", "value": "<span class='highlight'>封锁 / 无人认领 / 无主权</span>" },
+      { "label": "形成日期", "value": "2028年12月1日" },
+      { "label": "面积", "value": "约 <span class='censored'>[精确测绘未完成]</span> 平方公里" },
+      { "label": "人口", "value": "无统计 / 估计 <span class='redacted'>████</span> 万流民" },
+      { "label": "主权", "value": "无 / 原属俄、美、加领土" },
+      { "label": "核心威胁", "value": "DeWorld残余 / 流民武装 / 辐射 / 失控AI" },
+      { "label": "气候", "value": "核冬天 / 极寒 / 强风" },
+      { "label": "经济系统", "value": "子弹货币化 / 三级货币（卢布/美元/小麦粉）" },
+      { "label": "EPUN状态", "value": "可持续封锁（Sustainable Containment）" }
+    ]
+  },
+  "categories": ["entities", "locations"],
+  "relations": {
+    "parent": null,
+    "subordinates": ["efgh-alpha", "sr-3", "grassland-base", "factory", "old-city", "mining-zone", "south-mountain", "vichy-village", "no-mans-land"],
+    "associates": [
+      { "id": "epun", "type": "封锁", "description": "执行可持续封锁的超国家联合体" },
+      { "id": "deworld", "type": "起源", "description": "战区的缔造者，现已转入地下" },
+      { "id": "wun", "type": "驻防", "description": "封锁线部署部队" }
+    ]
+  },
+  "autoGenerate": {
+    "breadcrumb": true,
+    "categoryNav": true,
+    "relatedPages": true
+  },
+  "metadata": {
+    "author": "EPUN战档司 · 战区测绘处",
+    "reviewer": "L3审核员",
+    "version": "1.0.0"
+  }
+}

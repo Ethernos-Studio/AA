@@ -1,0 +1,40 @@
+{
+  "siteName": "Alpha Archive",
+  "domain": "aa.ethernos.net",
+  "defaultPage": "epun",
+  "footer": "ALPHA ARCHIVE // 未经授权访问将触发追踪协议",
+  "categories": {
+    "entities": {
+      "id": "entities",
+      "name": "单体",
+      "description": "世界观中的核心实体",
+      "parent": null,
+      "subcategories": ["organizations", "locations", "characters", "items"]
+    },
+    "organizations": {
+      "id": "organizations",
+      "name": "组织",
+      "description": "各类组织机构",
+      "parent": "entities",
+      "pages": ["epun", "deworld","sr-lab", "wun"]
+    },
+    "locations": {
+      "id": "locations",
+      "name": "地点",
+      "description": "地理区域与场所",
+      "parent": "entities",
+      "pages": ["alpha-zone"]
+    }
+  },
+  "pageRegistry": [
+    { "id": "index", "file": "pages/index.json" },
+    { "id": "recent", "file": "pages/recent.json" },
+    { "id": "epun", "file": "pages/epun.json" },
+    { "id": "deworld", "file": "pages/deworld.json" },
+    { "id": "sr-lab", "file": "pages/sr-lab.json" },
+    { "id": "efgh", "file": "pages/efgh.json" },
+    { "id": "alpha-zone", "file": "pages/alpha-zone.json" },
+    { "id": "efgh-alpha", "file": "pages/efgh-alpha.json" },
+    { "id": "wun", "file": "pages/wun.json" }
+  ]
+}

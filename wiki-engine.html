@@ -1,0 +1,1951 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alpha Archive Wiki</title>
+<style>
+  :root {
+    --bg: #08080c;
+    --bg-secondary: #0f0f14;
+    --bg-tertiary: #15151a;
+    --text: #b0b0b8;
+    --text-heading: #e0e0e5;
+    --text-muted: #606068;
+    --border: #22222a;
+    --accent-red: #c0392b;
+    --accent-amber: #d4a017;
+    --accent-blue: #4a8bc2;
+    --accent-green: #27ae60;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+    --font-mono: "SFMono-Regular", "Consolas", "Liberation Mono", "Courier New", "Noto Sans Mono SC", monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    font-size: 14.5px;
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0.15),
+      rgba(0,0,0,0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.3;
+  }
+
+  .site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 48px;
+    background: rgba(8,8,12,0.95);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    backdrop-filter: blur(4px);
+  }
+
+  .site-brand {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-heading);
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+
+  .site-brand .domain { color: var(--accent-amber); }
+  .site-brand .sep { color: var(--text-muted); margin: 0 6px; }
+
+  .connection-status {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-green);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--accent-green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .container {
+    display: flex;
+    margin-top: 48px;
+    min-height: calc(100vh - 48px);
+  }
+
+  .sidebar {
+    width: 220px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    z-index: 90;
+  }
+
+  .nav-section { margin-bottom: 24px; padding: 0 16px; }
+
+  .nav-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+  }
+
+  .nav-list { list-style: none; }
+  .nav-list li { margin-bottom: 2px; }
+
+  .nav-list a, .nav-list span {
+    display: block;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12.5px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .nav-list a:hover {
+    background: rgba(255,255,255,0.04);
+    color: var(--text-heading);
+  }
+
+  .nav-list .current {
+    background: rgba(212, 160, 23, 0.08);
+    color: var(--accent-amber);
+    border-left: 2px solid var(--accent-amber);
+    padding-left: 6px;
+  }
+
+  .nav-list .locked {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    position: relative;
+  }
+
+  .nav-list .locked::after {
+    content: "[L4+]";
+    float: right;
+    font-size: 10px;
+    color: var(--accent-red);
+    opacity: 0.6;
+  }
+
+  .main {
+    margin-left: 220px;
+    flex: 1;
+    padding: 32px 40px;
+    max-width: 1232px;
+    padding-bottom: 120px;
+  }
+
+  .content-wrapper {
+    display: flex;
+    gap: 32px;
+  }
+
+  .content-main {
+    flex: 1;
+    min-width: 0;
+    max-width: 900px;
+  }
+
+  .content-sidebar {
+    width: 300px;
+    flex-shrink: 0;
+  }
+
+  .breadcrumb {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+  }
+
+  .breadcrumb a { color: var(--accent-blue); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb .sep { margin: 0 4px; }
+
+  .class-banner {
+    border: 1px solid var(--accent-amber);
+    background: rgba(212, 160, 23, 0.06);
+    padding: 10px 14px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .class-icon {
+    width: 28px; height: 28px;
+    border: 1px solid var(--accent-amber);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-amber);
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .class-text { color: var(--accent-amber); letter-spacing: 0.04em; }
+  .class-meta { margin-left: auto; color: var(--text-muted); text-align: right; }
+
+  .page-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-heading);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .page-subtitle {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+  }
+
+  .glitch-hover:hover {
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+    color: var(--accent-red);
+  }
+
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-1px, 1px); }
+    40% { transform: translate(-1px, -1px); }
+    60% { transform: translate(1px, 1px); }
+    80% { transform: translate(1px, -1px); }
+    100% { transform: translate(0); }
+  }
+
+  .infobox {
+    width: 280px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    font-size: 12.5px;
+    position: sticky;
+    top: 68px;
+  }
+
+  .infobox-header {
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .infobox-row {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .infobox-row:last-child { border-bottom: none; }
+
+  .infobox-label {
+    width: 90px;
+    padding: 8px 10px;
+    color: var(--text-muted);
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .infobox-value {
+    padding: 8px 10px;
+    color: var(--text-heading);
+    flex: 1;
+  }
+
+  .section { margin-bottom: 28px; }
+
+  .section h2 {
+    font-size: 16px;
+    color: var(--text-heading);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  .section h3 {
+    font-size: 14px;
+    color: var(--text-heading);
+    margin: 16px 0 8px;
+    font-weight: 600;
+  }
+
+  .section p { margin-bottom: 10px; text-align: justify; }
+
+  .redacted {
+    background: var(--text-heading);
+    color: transparent;
+    padding: 0 2px;
+    border-radius: 1px;
+    user-select: none;
+    cursor: help;
+    transition: background 0.2s;
+  }
+
+  .redacted:hover { background: var(--accent-red); }
+
+  .redacted-text {
+    color: var(--accent-red);
+    font-weight: bold;
+    font-family: var(--font-mono);
+  }
+
+  .censored { color: var(--text-muted); font-style: italic; }
+  .highlight { color: var(--accent-amber); }
+
+  .code-term {
+    font-family: var(--font-mono);
+    background: rgba(255,255,255,0.04);
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 12px;
+    color: var(--accent-blue);
+  }
+
+  .timeline {
+    border-left: 1px solid var(--border);
+    margin-left: 6px;
+    padding-left: 16px;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 14px;
+  }
+
+  .timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -20px;
+    top: 5px;
+    width: 7px;
+    height: 7px;
+    background: var(--bg);
+    border: 1px solid var(--text-muted);
+    border-radius: 50%;
+  }
+
+  .timeline-item.key::before {
+    border-color: var(--accent-red);
+    background: var(--accent-red);
+    box-shadow: 0 0 6px rgba(192, 57, 43, 0.4);
+  }
+
+  .timeline-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+
+  .warning-box {
+    border: 1px solid var(--accent-red);
+    background: rgba(192, 57, 43, 0.05);
+    padding: 12px 14px;
+    margin: 16px 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .warning-box .label {
+    color: var(--accent-red);
+    font-weight: bold;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .collapsible {
+    border: 1px solid var(--border);
+    margin: 12px 0;
+  }
+
+  .collapsible-header {
+    background: rgba(255,255,255,0.02);
+    padding: 8px 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .collapsible-body {
+    padding: 12px;
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+
+  .collapsible.expanded .collapsible-body { display: block; }
+  .collapsible.expanded .collapsible-header::after { content: "[-]"; }
+  .collapsible-header::after { content: "[+]"; }
+
+  .footnotes {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+
+  .footnotes ol { padding-left: 16px; }
+  .footnotes li { margin-bottom: 4px; }
+
+  .page-footer {
+    margin-top: 40px;
+    padding: 16px;
+    border: 1px dashed var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .quick-nav {
+    position: fixed;
+    bottom: 0;
+    left: 220px;
+    right: 0;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 80;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .quick-nav-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .quick-nav-btn {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+
+  .quick-nav-btn:hover {
+    color: var(--text-heading);
+    border-color: var(--accent-amber);
+    background: rgba(212, 160, 23, 0.08);
+  }
+
+  .quick-nav-btn.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .quick-nav-info {
+    color: var(--text-muted);
+    font-size: 11px;
+  }
+
+  .search-box {
+    position: relative;
+  }
+
+  .search-box input {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 12px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    width: 200px;
+    border-radius: 3px;
+  }
+
+  .search-box input:focus {
+    outline: none;
+    border-color: var(--accent-amber);
+  }
+
+  .search-results {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+  }
+
+  .search-results.active { display: block; }
+
+  .search-result-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .search-result-item:hover {
+    background: rgba(255,255,255,0.04);
+    color: var(--text-heading);
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .tag {
+    background: rgba(74, 139, 194, 0.1);
+    color: var(--accent-blue);
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+  }
+
+  .tag:hover { background: rgba(74, 139, 194, 0.2); }
+
+  .loading-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.3s;
+  }
+
+  .loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loading-text {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--accent-amber);
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .toc {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    margin-bottom: 20px;
+  }
+
+  .toc-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .toc-list { list-style: none; }
+  .toc-list li { margin-bottom: 4px; }
+  .toc-list a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .toc-list a:hover { color: var(--accent-amber); }
+
+  .wiki-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+  }
+
+  .wiki-table thead {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .wiki-table th,
+  .wiki-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+
+  .wiki-table th:last-child,
+  .wiki-table td:last-child {
+    border-right: none;
+  }
+
+  .wiki-table th {
+    font-weight: 600;
+    color: var(--text-heading);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .wiki-table td {
+    color: var(--text);
+  }
+
+  .wiki-table tbody tr:hover {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .wiki-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .wiki-category-box {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    margin: 24px 0;
+    font-size: 12.5px;
+  }
+
+  .wiki-category-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .wiki-category-header .cat-label {
+    color: var(--text-muted);
+    margin-right: 8px;
+  }
+
+  .wiki-category-header .cat-path {
+    color: var(--text-heading);
+  }
+
+  .wiki-category-header .cat-path a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .wiki-category-header .cat-path a:hover {
+    text-decoration: underline;
+  }
+
+  .wiki-category-header .cat-sep {
+    color: var(--text-muted);
+    margin: 0 6px;
+  }
+
+  .wiki-category-body {
+    padding: 12px 14px;
+  }
+
+  .wiki-category-section {
+    margin-bottom: 12px;
+  }
+
+  .wiki-category-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .wiki-category-section-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .wiki-category-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+
+  .wiki-category-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .wiki-category-item a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .wiki-category-item a:hover {
+    text-decoration: underline;
+  }
+
+  .wiki-category-item.current {
+    color: var(--accent-amber);
+    font-weight: 500;
+  }
+
+  .wiki-category-item .relation-tag {
+    font-size: 10px;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.04);
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-family: var(--font-mono);
+  }
+
+  .wiki-related-box {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    margin: 24px 0;
+  }
+
+  .wiki-related-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .wiki-related-title {
+    color: var(--text-heading);
+  }
+
+  .wiki-related-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .wiki-related-actions a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .wiki-related-actions a:hover {
+    text-decoration: underline;
+  }
+
+  .wiki-related-body {
+    padding: 12px 14px;
+  }
+
+  .wiki-related-section {
+    margin-bottom: 16px;
+  }
+
+  .wiki-related-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .wiki-related-section-title {
+    font-size: 12px;
+    color: var(--text-heading);
+    margin-bottom: 8px;
+    padding-left: 8px;
+    border-left: 2px solid var(--accent-amber);
+  }
+
+  .wiki-related-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    padding-left: 10px;
+  }
+
+  .wiki-related-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .wiki-related-item a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .wiki-related-item a:hover {
+    text-decoration: underline;
+  }
+
+  .wiki-related-item .rel-type {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 20px; padding-bottom: 100px; }
+    .infobox { float: none; width: 100%; margin: 0 0 20px; }
+    .quick-nav { left: 0; padding: 12px 20px; flex-wrap: wrap; gap: 8px; }
+    .search-box input { width: 150px; }
+  }
+
+  @media print {
+    body::after, body::before { display: none; }
+    .quick-nav { display: none; }
+    .page-footer::after {
+      content: "[PRINT DETECTED] 该操作已被记录。";
+      display: block;
+      color: red;
+      margin-top: 10px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-text">正在连接档案服务器...</div>
+</div>
+
+<header class="site-header">
+  <div class="site-brand" onclick="wiki.goHome()">
+    <span class="domain">aa.ethernos.net</span>
+    <span class="sep">/</span>
+    <span>ALPHA ARCHIVE</span>
+  </div>
+  <div class="connection-status">
+    <span class="status-dot"></span>
+    <span id="connectionStatus">CONNECTED // WIKI-ENGINE // LATENCY <span id="latency">0</span>ms</span>
+  </div>
+</header>
+
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+  </aside>
+
+  <main class="main" id="mainContent">
+  </main>
+</div>
+
+<div class="quick-nav" id="quickNav">
+  <div class="quick-nav-group">
+    <a class="quick-nav-btn" id="prevBtn" onclick="wiki.prevPage()">← 上一页</a>
+    <a class="quick-nav-btn" id="nextBtn" onclick="wiki.nextPage()">下一页 →</a>
+  </div>
+  <div class="quick-nav-info" id="pageIndicator">- / -</div>
+  <div class="quick-nav-group">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="搜索档案..." autocomplete="off">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    <a class="quick-nav-btn" onclick="wiki.randomPage()">随机条目</a>
+  </div>
+</div>
+
+<script>
+const WikiEngine = (function() {
+  'use strict';
+
+  const state = {
+    config: null,
+    pages: new Map(),
+    currentPageId: null,
+    history: [],
+    historyIndex: -1,
+    sidebarData: null
+  };
+
+  const dom = {
+    sidebar: null,
+    mainContent: null,
+    loadingOverlay: null,
+    searchInput: null,
+    searchResults: null,
+    pageIndicator: null,
+    prevBtn: null,
+    nextBtn: null,
+    latency: null
+  };
+
+  function init() {
+    dom.sidebar = document.getElementById('sidebar');
+    dom.mainContent = document.getElementById('mainContent');
+    dom.loadingOverlay = document.getElementById('loadingOverlay');
+    dom.searchInput = document.getElementById('searchInput');
+    dom.searchResults = document.getElementById('searchResults');
+    dom.pageIndicator = document.getElementById('pageIndicator');
+    dom.prevBtn = document.getElementById('prevBtn');
+    dom.nextBtn = document.getElementById('nextBtn');
+    dom.latency = document.getElementById('latency');
+
+    bindEvents();
+    startLatencySimulation();
+    loadConfig();
+  }
+
+  function bindEvents() {
+    dom.searchInput.addEventListener('input', debounce(handleSearch, 200));
+    dom.searchInput.addEventListener('blur', () => {
+      setTimeout(() => dom.searchResults.classList.remove('active'), 200);
+    });
+    dom.searchInput.addEventListener('focus', () => {
+      if (dom.searchInput.value.trim()) {
+        dom.searchResults.classList.add('active');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && e.ctrlKey) {
+        e.preventDefault();
+        prevPage();
+      } else if (e.key === 'ArrowRight' && e.ctrlKey) {
+        e.preventDefault();
+        nextPage();
+      }
+    });
+  }
+
+  function debounce(fn, delay) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
+  function startLatencySimulation() {
+    setInterval(() => {
+      const latency = Math.floor(Math.random() * 100) + 200;
+      dom.latency.textContent = latency;
+    }, 3000);
+  }
+
+  async function loadConfig() {
+    try {
+      // Fetch config with cache buster to ensure latest version
+      const response = await fetch('wiki-config.json' + getCacheBuster());
+      if (!response.ok) throw new Error('Config not found');
+      state.config = await response.json();
+      await loadSidebar();
+      await preloadPages();
+      hideLoading();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const pageId = urlParams.get('page') || state.config.defaultPage;
+      loadPage(pageId);
+    } catch (err) {
+      console.error('Failed to load config:', err);
+      renderError('配置文件加载失败，请检查 wiki-config.json 是否存在');
+      hideLoading();
+    }
+  }
+
+  async function loadSidebar() {
+    try {
+      const response = await fetch('wiki-sidebar.json' + getCacheBuster());
+      if (!response.ok) throw new Error('Sidebar not found');
+      state.sidebarData = await response.json();
+      renderSidebar();
+    } catch (err) {
+      console.error('Failed to load sidebar:', err);
+    }
+  }
+
+  // Cache version - increment to bust cache
+  const CACHE_VERSION = 'v1';
+  
+  // Generate cache-busting query param - O(1)
+  function getCacheBuster() {
+    return `?_=${CACHE_VERSION}_${Math.floor(Date.now() / 60000)}`;
+  }
+  
+  // Disk I/O: O(n) fetch with cache-busting query param
+  async function preloadPages() {
+    if (!state.config || !state.config.pageRegistry) return;
+    const registry = state.config.pageRegistry;
+    
+    const cacheBuster = getCacheBuster();
+    
+    for (const entry of registry) {
+      try {
+        // Fetch JSON config with cache buster
+        const configResponse = await fetch(entry.file + cacheBuster);
+        if (!configResponse.ok) continue;
+        const pageConfig = await configResponse.json();
+        
+        let content = '';
+        if (pageConfig.contentFile) {
+          // Fetch Markdown content with cache buster
+          // Uses page lastUpdated as additional cache key if available
+          const contentCacheKey = pageConfig.lastUpdated 
+            ? `&t=${pageConfig.lastUpdated}` 
+            : '';
+          const contentResponse = await fetch(pageConfig.contentFile + cacheBuster + contentCacheKey);
+          if (contentResponse.ok) {
+            content = await contentResponse.text();
+          }
+        }
+        
+        state.pages.set(entry.id, {
+          ...pageConfig,
+          content: content
+        });
+      } catch (err) {
+        console.warn(`Failed to preload page: ${entry.id}`, err);
+      }
+    }
+  }
+  
+  // Force refresh current page content - O(1) disk I/O
+  async function refreshPageContent(pageId) {
+    const page = state.pages.get(pageId);
+    if (!page || !page.contentFile) return;
+    
+    try {
+      // Use precise timestamp for force refresh
+      const forceCacheBuster = `?_=${Date.now()}`;
+      const response = await fetch(page.contentFile + forceCacheBuster, {
+        cache: 'no-store'
+      });
+      if (response.ok) {
+        const newContent = await response.text();
+        page.content = newContent;
+        renderPage(page);
+        console.log(`[WikiEngine] Page ${pageId} refreshed`);
+      }
+    } catch (err) {
+      console.warn(`[WikiEngine] Failed to refresh page: ${pageId}`, err);
+    }
+  }
+
+  function renderSidebar() {
+    if (!state.sidebarData) return;
+    let html = '';
+    state.sidebarData.sections.forEach(section => {
+      html += `<div class="nav-section">`;
+      html += `<div class="nav-title">${escapeHtml(section.title)}</div>`;
+      html += `<ul class="nav-list">`;
+      section.items.forEach(item => {
+        if (item.type === 'subheader') {
+          html += `<li><span class="nav-title" style="border:none;padding:0;margin:0;font-size:10px;margin-top:8px;">${escapeHtml(item.title)}</span></li>`;
+        } else if (item.type === 'action') {
+          html += `<li><a onclick="wiki.handleSidebarAction('${item.action}')">${escapeHtml(item.title)}</a></li>`;
+        } else if (item.type === 'locked') {
+          const safeTitle = (item.title || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+          html += `<li><a class="locked" onclick="wiki.renderLockedPage('${safeTitle}')">${escapeHtml(item.title)}</a></li>`;
+        } else {
+          const isCurrent = item.id === state.currentPageId;
+          html += `<li><a class="${isCurrent ? 'current' : ''}" onclick="wiki.loadPage('${item.id}')">${escapeHtml(item.title)}</a></li>`;
+        }
+      });
+      html += `</ul></div>`;
+    });
+    dom.sidebar.innerHTML = html;
+  }
+
+  function handleSidebarAction(action) {
+    switch (action) {
+      case 'random':
+        randomPage();
+        break;
+      default:
+        console.warn(`[WikiEngine] Unknown sidebar action: ${action}`);
+    }
+  }
+
+  function loadPage(pageId) {
+    if (!pageId || !state.pages.has(pageId)) {
+      render404(pageId);
+      return;
+    }
+
+    if (state.currentPageId !== pageId) {
+      if (state.historyIndex < state.history.length - 1) {
+        state.history = state.history.slice(0, state.historyIndex + 1);
+      }
+      state.history.push(pageId);
+      state.historyIndex++;
+    }
+
+    state.currentPageId = pageId;
+    const page = state.pages.get(pageId);
+    renderPage(page);
+    updateQuickNav();
+    renderSidebar();
+    window.scrollTo(0, 0);
+
+    const url = new URL(window.location);
+    url.searchParams.set('page', pageId);
+    window.history.pushState({}, '', url);
+  }
+
+  function renderPage(page) {
+    const parsed = parseMarkdown(page.content);
+    let mainHtml = '';
+    let sidebarHtml = '';
+
+    // Auto-generate breadcrumb if enabled
+    if (page.autoGenerate?.breadcrumb && page.categories) {
+      mainHtml += generateBreadcrumb(page);
+    } else if (parsed.breadcrumb) {
+      mainHtml += `<div class="breadcrumb">${parsed.breadcrumb}</div>`;
+    }
+
+    if (page.banner) {
+      mainHtml += renderBanner(page.banner);
+    }
+
+    if (page.title) {
+      mainHtml += `<h1 class="page-title glitch-hover">${escapeHtml(page.title)}</h1>`;
+    }
+    if (page.subtitle) {
+      mainHtml += `<div class="page-subtitle">${escapeHtml(page.subtitle)}</div>`;
+    }
+
+    // Infobox goes to sidebar
+    if (page.infobox) {
+      sidebarHtml += renderInfobox(page.infobox);
+    }
+
+    if (parsed.toc.length > 0) {
+      mainHtml += renderTOC(parsed.toc);
+    }
+
+    mainHtml += parsed.content;
+
+    // Auto-generate category navigation (wiki style)
+    if (page.autoGenerate?.categoryNav) {
+      mainHtml += generateCategoryNav(page);
+    }
+
+    // Auto-generate related pages
+    if (page.autoGenerate?.relatedPages) {
+      mainHtml += generateRelatedPages(page);
+    }
+
+    if (page.tags && page.tags.length > 0) {
+      mainHtml += `<div class="tag-list">`;
+      page.tags.forEach(tag => {
+        mainHtml += `<span class="tag" onclick="wiki.searchTag('${escapeHtml(tag)}')">${escapeHtml(tag)}</span>`;
+      });
+      mainHtml += `</div>`;
+    }
+
+    mainHtml += `<div class="page-footer">`;
+    mainHtml += `归档编号: ${escapeHtml(page.archiveId || 'N/A')} | `;
+    mainHtml += `保密等级: ${escapeHtml(page.clearance || 'L1')} | `;
+    mainHtml += `最后更新: ${escapeHtml(page.lastUpdated || 'Unknown')}<br>`;
+    mainHtml += `${escapeHtml(state.config.footer || 'ALPHA ARCHIVE // 未经授权访问将触发追踪协议')}`;
+    mainHtml += `</div>`;
+
+    // Wrap content with sidebar layout
+    const fullHtml = `
+      <div class="content-wrapper">
+        <div class="content-main">${mainHtml}</div>
+        <div class="content-sidebar">${sidebarHtml}</div>
+      </div>
+    `;
+
+    dom.mainContent.innerHTML = fullHtml;
+    initCollapsibles();
+  }
+
+  function generateBreadcrumb(page) {
+    if (!page.categories || !state.config.categories) return '';
+    
+    let html = '<div class="breadcrumb">';
+    
+    // Build category path
+    page.categories.forEach((catId, index) => {
+      const category = state.config.categories[catId];
+      if (category) {
+        if (index > 0) html += ' <span class="sep">&gt;</span> ';
+        // Find first page in this category for link
+        const firstPageId = category.pages?.[0] || category.subcategories?.[0];
+        if (firstPageId && state.pages.has(firstPageId)) {
+          html += `<a onclick="wiki.loadPage('${firstPageId}')">${escapeHtml(category.name)}</a>`;
+        } else {
+          html += escapeHtml(category.name);
+        }
+      }
+    });
+    
+    html += ` <span class="sep">&gt;</span> `;
+    html += escapeHtml(page.title);
+    html += '</div>';
+    return html;
+  }
+
+  function generateCategoryNav(page) {
+    if (!page.categories || !state.config.categories) return '';
+    
+    let html = '<div class="wiki-category-box">';
+    
+    // Header with category path
+    html += '<div class="wiki-category-header">';
+    html += '<span class="cat-label">分类:</span>';
+    html += '<span class="cat-path">';
+    
+    page.categories.forEach((catId, index) => {
+      const category = state.config.categories[catId];
+      if (category) {
+        if (index > 0) html += '<span class="cat-sep">›</span>';
+        const firstPageId = category.pages?.[0];
+        if (firstPageId && state.pages.has(firstPageId)) {
+          html += `<a onclick="wiki.loadPage('${firstPageId}')">${escapeHtml(category.name)}</a>`;
+        } else {
+          html += escapeHtml(category.name);
+        }
+      }
+    });
+    
+    html += '</span></div>';
+    html += '<div class="wiki-category-body">';
+    
+    // Get the leaf category (last in categories array)
+    const leafCatId = page.categories[page.categories.length - 1];
+    const leafCategory = state.config.categories[leafCatId];
+    
+    if (leafCategory && leafCategory.pages) {
+      html += '<div class="wiki-category-section">';
+      html += `<div class="wiki-category-section-title">${escapeHtml(leafCategory.name)}</div>`;
+      html += '<div class="wiki-category-list">';
+      
+      leafCategory.pages.forEach(pageId => {
+        const p = state.pages.get(pageId);
+        if (p) {
+          const isCurrent = pageId === state.currentPageId;
+          html += `<span class="wiki-category-item ${isCurrent ? 'current' : ''}">`;
+          if (isCurrent) {
+            html += escapeHtml(p.title);
+          } else {
+            html += `<a onclick="wiki.loadPage('${pageId}')">${escapeHtml(p.title)}</a>`;
+          }
+          html += '</span>';
+        }
+      });
+      
+      html += '</div></div>';
+    }
+    
+    // Show sibling categories if parent exists
+    const parentCatId = leafCategory?.parent;
+    if (parentCatId) {
+      const parentCategory = state.config.categories[parentCatId];
+      if (parentCategory && parentCategory.subcategories) {
+        html += '<div class="wiki-category-section">';
+        html += `<div class="wiki-category-section-title">${escapeHtml(parentCategory.name)}</div>`;
+        html += '<div class="wiki-category-list">';
+        
+        parentCategory.subcategories.forEach(subId => {
+          const subCat = state.config.categories[subId];
+          if (subCat) {
+            const isCurrent = subId === leafCatId;
+            html += `<span class="wiki-category-item ${isCurrent ? 'current' : ''}">`;
+            const firstPageId = subCat.pages?.[0];
+            if (firstPageId && state.pages.has(firstPageId)) {
+              html += `<a onclick="wiki.loadPage('${firstPageId}')">${escapeHtml(subCat.name)}</a>`;
+            } else {
+              html += escapeHtml(subCat.name);
+            }
+            html += '</span>';
+          }
+        });
+        
+        html += '</div></div>';
+      }
+    }
+    
+    html += '</div></div>';
+    return html;
+  }
+
+  function generateRelatedPages(page) {
+    if (!page.relations) return '';
+    
+    let html = '<div class="wiki-related-box">';
+    html += '<div class="wiki-related-header">';
+    html += '<span class="wiki-related-title">相关条目</span>';
+    html += '<span class="wiki-related-actions">';
+    html += '</span></div>';
+    html += '<div class="wiki-related-body">';
+    
+    // Parent relation
+    if (page.relations.parent) {
+      const parentPage = state.pages.get(page.relations.parent);
+      if (parentPage) {
+        html += '<div class="wiki-related-section">';
+        html += '<div class="wiki-related-section-title">上级</div>';
+        html += '<div class="wiki-related-list">';
+        html += `<span class="wiki-related-item"><a onclick="wiki.loadPage('${page.relations.parent}')">${escapeHtml(parentPage.title)}</a><span class="rel-type">隶属</span></span>`;
+        html += '</div></div>';
+      }
+    }
+    
+    // Subordinates
+    if (page.relations.subordinates && page.relations.subordinates.length > 0) {
+      html += '<div class="wiki-related-section">';
+      html += '<div class="wiki-related-section-title">下属</div>';
+      html += '<div class="wiki-related-list">';
+      
+      page.relations.subordinates.forEach(subId => {
+        const subPage = state.pages.get(subId);
+        if (subPage) {
+          html += `<span class="wiki-related-item"><a onclick="wiki.loadPage('${subId}')">${escapeHtml(subPage.title)}</a></span>`;
+        }
+      });
+      
+      html += '</div></div>';
+    }
+    
+    // Associates
+    if (page.relations.associates && page.relations.associates.length > 0) {
+      html += '<div class="wiki-related-section">';
+      html += '<div class="wiki-related-section-title">关联</div>';
+      html += '<div class="wiki-related-list">';
+      
+      page.relations.associates.forEach(rel => {
+        const relPage = state.pages.get(rel.id);
+        if (relPage) {
+          html += `<span class="wiki-related-item"><a onclick="wiki.loadPage('${rel.id}')">${escapeHtml(relPage.title)}</a><span class="rel-type">${escapeHtml(rel.type)}</span></span>`;
+        }
+      });
+      
+      html += '</div></div>';
+    }
+    
+    html += '</div></div>';
+    return html;
+  }
+
+  function renderBanner(banner) {
+    const colors = {
+      amber: { border: 'var(--accent-amber)', bg: 'rgba(212, 160, 23, 0.06)', text: 'var(--accent-amber)' },
+      red: { border: 'var(--accent-red)', bg: 'rgba(192, 57, 43, 0.06)', text: 'var(--accent-red)' },
+      blue: { border: 'var(--accent-blue)', bg: 'rgba(74, 139, 194, 0.06)', text: 'var(--accent-blue)' },
+      green: { border: 'var(--accent-green)', bg: 'rgba(39, 174, 96, 0.06)', text: 'var(--accent-green)' }
+    };
+    const c = colors[banner.color] || colors.amber;
+    return `
+      <div class="class-banner" style="border-color: ${c.border}; background: ${c.bg};">
+        <div class="class-icon" style="border-color: ${c.border}; color: ${c.text};">${escapeHtml(banner.level)}</div>
+        <div class="class-text" style="color: ${c.text};">${escapeHtml(banner.text)}</div>
+        <div class="class-meta">${escapeHtml(banner.meta || '')}</div>
+      </div>
+    `;
+  }
+
+  function renderInfobox(infobox) {
+    let html = `<aside class="infobox">`;
+    html += `<div class="infobox-header">${escapeHtml(infobox.title || 'Entity Profile')}</div>`;
+    infobox.fields.forEach(field => {
+      html += `<div class="infobox-row">`;
+      html += `<div class="infobox-label">${escapeHtml(field.label)}</div>`;
+      // Process value to convert single quotes to double quotes for HTML attributes
+      // and ensure proper rendering of styling tags
+      let processedValue = field.value;
+      if (typeof processedValue === 'string') {
+        // Convert single-quoted attributes to double-quoted for consistency
+        processedValue = processedValue.replace(/class='/g, 'class="');
+        processedValue = processedValue.replace(/'>/g, '">');
+      }
+      html += `<div class="infobox-value">${processedValue}</div>`;
+      html += `</div>`;
+    });
+    html += `</aside>`;
+    return html;
+  }
+
+  function renderTOC(toc) {
+    let html = `<div class="toc">`;
+    html += `<div class="toc-title">目录</div>`;
+    html += `<ul class="toc-list">`;
+    toc.forEach(item => {
+      html += `<li><a onclick="document.getElementById('${item.id}').scrollIntoView({behavior:'smooth'})">${escapeHtml(item.text)}</a></li>`;
+    });
+    html += `</ul></div>`;
+    return html;
+  }
+
+  function parseMarkdown(md) {
+    const toc = [];
+    let breadcrumb = '';
+
+    md = md.replace(/^---\n([\s\S]*?)\n---\n/, '');
+
+    const breadcrumbMatch = md.match(/\[breadcrumb\]([\s\S]*?)\[\/breadcrumb\]/);
+    if (breadcrumbMatch) {
+      breadcrumb = breadcrumbMatch[1].trim();
+      breadcrumb = breadcrumb.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a onclick="wiki.loadPage(\'$2\')">$1</a>');
+      md = md.replace(breadcrumbMatch[0], '');
+    }
+
+    // Parse ordered lists (1. 2. 3.) - must be before inline styles
+    md = parseOrderedLists(md);
+    
+    // Parse unordered lists (- or *) - must be before inline styles
+    md = parseUnorderedLists(md);
+
+    // Inline text styles - process after block-level elements
+    md = md.replace(/\[redacted\]([^\[]*)\[\/redacted\]/g, '<span class="redacted">$1</span>');
+    md = md.replace(/\[redacted-text\]([^\[]*)\[\/redacted-text\]/g, '<span class="redacted-text">$1</span>');
+    md = md.replace(/\[censored\]([^\[]*)\[\/censored\]/g, '<span class="censored">$1</span>');
+    md = md.replace(/\[highlight\]([^\[]*)\[\/highlight\]/g, '<span class="highlight">$1</span>');
+    md = md.replace(/\[code\]([^\[]*)\[\/code\]/g, '<span class="code-term">$1</span>');
+    
+    // Bold text - process after lists to handle ** inside list items
+    md = md.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+    md = md.replace(/^## (.*$)/gim, (match, text) => {
+      const id = 'section-' + Math.random().toString(36).substr(2, 9);
+      toc.push({ id, text });
+      return `<h2 id="${id}">${text}</h2>`;
+    });
+
+    md = md.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+
+    md = md.replace(/\[warning\]([\s\S]*?)\[\/warning\]/g, (match, content) => {
+      const lines = content.trim().split('\n');
+      const label = lines[0];
+      const text = lines.slice(1).join('<br>');
+      return `<div class="warning-box"><span class="label">${label}</span>${text}</div>`;
+    });
+
+    md = md.replace(/\[collapsible title="([^"]*)"\]([\s\S]*?)\[\/collapsible\]/g, (match, title, body) => {
+      return `<div class="collapsible"><div class="collapsible-header">${title}</div><div class="collapsible-body">${body}</div></div>`;
+    });
+
+    md = md.replace(/\[timeline\]([\s\S]*?)\[\/timeline\]/g, (match, content) => {
+      let items = '';
+      const entries = content.trim().split('\n\n');
+      entries.forEach(entry => {
+        const lines = entry.trim().split('\n');
+        if (lines.length >= 2) {
+          const date = lines[0].replace(/^\*\*/, '').replace(/\*\*$/, '');
+          const text = lines.slice(1).join(' ');
+          const isKey = entry.includes('[key]');
+          items += `<div class="timeline-item ${isKey ? 'key' : ''}"><div class="timeline-date">${date}</div><p>${text.replace(/\[key\]/g, '')}</p></div>`;
+        }
+      });
+      return `<div class="timeline">${items}</div>`;
+    });
+
+    md = md.replace(/\[section\]([\s\S]*?)\[\/section\]/g, '<div class="section">$1</div>');
+
+    // Parse Markdown tables - O(n) complexity
+    md = parseMarkdownTables(md);
+
+    md = md.replace(/\n\n/g, '</p><p>');
+    md = md.replace(/^<p>/, '');
+    md = md.replace(/<\/p>$/, '');
+    md = '<p>' + md + '</p>';
+
+    return { content: md, toc, breadcrumb };
+  }
+
+  // O(n) complexity - single pass list parser
+  function parseOrderedLists(md) {
+    const lines = md.split('\n');
+    const result = [];
+    let inList = false;
+    let listItems = [];
+    let indentStack = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const match = line.match(/^(\s*)(\d+)\.\s+(.+)$/);
+      
+      if (match) {
+        const indent = match[1].length;
+        const num = match[2];
+        const content = match[3];
+        
+        if (!inList) {
+          inList = true;
+          indentStack = [indent];
+          result.push('<ol>');
+        } else {
+          // Check indentation level change
+          const lastIndent = indentStack[indentStack.length - 1];
+          if (indent > lastIndent) {
+            // Nested list
+            indentStack.push(indent);
+            result.push('<ol>');
+          } else if (indent < lastIndent) {
+            // Return to parent level
+            while (indentStack.length > 1 && indentStack[indentStack.length - 1] > indent) {
+              indentStack.pop();
+              result.push('</ol>');
+            }
+          }
+        }
+        
+        result.push(`<li>${content}</li>`);
+      } else {
+        if (inList) {
+          // End of list
+          while (indentStack.length > 0) {
+            result.push('</ol>');
+            indentStack.pop();
+          }
+          inList = false;
+        }
+        result.push(line);
+      }
+    }
+    
+    // Close any remaining open lists
+    if (inList) {
+      while (indentStack.length > 0) {
+        result.push('</ol>');
+        indentStack.pop();
+      }
+    }
+    
+    return result.join('\n');
+  }
+
+  // O(n) complexity - single pass unordered list parser
+  function parseUnorderedLists(md) {
+    const lines = md.split('\n');
+    const result = [];
+    let inList = false;
+    let indentStack = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const match = line.match(/^(\s*)[-\*]\s+(.+)$/);
+      
+      if (match) {
+        const indent = match[1].length;
+        const content = match[2];
+        
+        if (!inList) {
+          inList = true;
+          indentStack = [indent];
+          result.push('<ul>');
+        } else {
+          const lastIndent = indentStack[indentStack.length - 1];
+          if (indent > lastIndent) {
+            indentStack.push(indent);
+            result.push('<ul>');
+          } else if (indent < lastIndent) {
+            while (indentStack.length > 1 && indentStack[indentStack.length - 1] > indent) {
+              indentStack.pop();
+              result.push('</ul>');
+            }
+          }
+        }
+        
+        result.push(`<li>${content}</li>`);
+      } else {
+        if (inList) {
+          while (indentStack.length > 0) {
+            result.push('</ul>');
+            indentStack.pop();
+          }
+          inList = false;
+        }
+        result.push(line);
+      }
+    }
+    
+    if (inList) {
+      while (indentStack.length > 0) {
+        result.push('</ul>');
+        indentStack.pop();
+      }
+    }
+    
+    return result.join('\n');
+  }
+
+  // O(n) complexity - Markdown table parser
+  // Supports: | Header | Header |
+  //           |--------|--------|
+  //           | Cell   | Cell   |
+  function parseMarkdownTables(md) {
+    const lines = md.split('\n');
+    const result = [];
+    let inTable = false;
+    let tableRows = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Check if line is a table row (starts and ends with |)
+      if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+        if (!inTable) {
+          inTable = true;
+          tableRows = [];
+        }
+        tableRows.push(line);
+      } else {
+        if (inTable) {
+          // End of table, process it
+          result.push(renderTable(tableRows));
+          inTable = false;
+          tableRows = [];
+        }
+        result.push(line);
+      }
+    }
+    
+    // Handle table at end of content
+    if (inTable && tableRows.length > 0) {
+      result.push(renderTable(tableRows));
+    }
+    
+    return result.join('\n');
+  }
+  
+  // Render table rows to HTML
+  function renderTable(rows) {
+    if (rows.length < 2) return rows.join('\n'); // Not a valid table
+    
+    // Check if second row is separator (contains only |, -, :, spaces)
+    const separatorRow = rows[1].trim();
+    const isSeparator = /^\|[-:\s|]+\|$/.test(separatorRow);
+    
+    if (!isSeparator) return rows.join('\n'); // Not a valid table
+    
+    let html = '<table class="wiki-table">';
+    
+    // Parse header row
+    const headerCells = parseTableRow(rows[0]);
+    html += '<thead><tr>';
+    headerCells.forEach(cell => {
+      html += `<th>${cell.trim()}</th>`;
+    });
+    html += '</tr></thead>';
+    
+    // Parse body rows (skip separator)
+    html += '<tbody>';
+    for (let i = 2; i < rows.length; i++) {
+      const cells = parseTableRow(rows[i]);
+      html += '<tr>';
+      cells.forEach(cell => {
+        html += `<td>${cell.trim()}</td>`;
+      });
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+    
+    return html;
+  }
+  
+  // Parse a single table row into cells
+  function parseTableRow(row) {
+    // Remove leading and trailing |
+    let content = row.trim();
+    if (content.startsWith('|')) content = content.slice(1);
+    if (content.endsWith('|')) content = content.slice(0, -1);
+    
+    // Split by | but handle escaped |
+    return content.split('|').map(cell => cell.trim());
+  }
+
+  function initCollapsibles() {
+    document.querySelectorAll('.collapsible-header').forEach(header => {
+      header.addEventListener('click', () => {
+        header.parentElement.classList.toggle('expanded');
+      });
+    });
+  }
+
+  function updateQuickNav() {
+    const allPages = Array.from(state.pages.values());
+    const currentIndex = allPages.findIndex(p => p.id === state.currentPageId);
+
+    dom.pageIndicator.textContent = `${currentIndex + 1} / ${allPages.length}`;
+
+    if (currentIndex > 0) {
+      dom.prevBtn.classList.remove('disabled');
+      dom.prevBtn.textContent = `← ${allPages[currentIndex - 1].title}`;
+    } else {
+      dom.prevBtn.classList.add('disabled');
+      dom.prevBtn.textContent = '← 上一页';
+    }
+
+    if (currentIndex < allPages.length - 1) {
+      dom.nextBtn.classList.remove('disabled');
+      dom.nextBtn.textContent = `${allPages[currentIndex + 1].title} →`;
+    } else {
+      dom.nextBtn.classList.add('disabled');
+      dom.nextBtn.textContent = '下一页 →';
+    }
+  }
+
+  function prevPage() {
+    if (state.historyIndex > 0) {
+      state.historyIndex--;
+      const pageId = state.history[state.historyIndex];
+      state.currentPageId = pageId;
+      const page = state.pages.get(pageId);
+      renderPage(page);
+      updateQuickNav();
+      renderSidebar();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function nextPage() {
+    if (state.historyIndex < state.history.length - 1) {
+      state.historyIndex++;
+      const pageId = state.history[state.historyIndex];
+      state.currentPageId = pageId;
+      const page = state.pages.get(pageId);
+      renderPage(page);
+      updateQuickNav();
+      renderSidebar();
+      window.scrollTo(0, 0);
+    } else {
+      const allPages = Array.from(state.pages.values());
+      const currentIndex = allPages.findIndex(p => p.id === state.currentPageId);
+      if (currentIndex < allPages.length - 1) {
+        loadPage(allPages[currentIndex + 1].id);
+      }
+    }
+  }
+
+  function goHome() {
+    if (state.config && state.config.defaultPage) {
+      loadPage(state.config.defaultPage);
+    }
+  }
+
+  function randomPage() {
+    const allPages = Array.from(state.pages.values());
+    if (allPages.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * allPages.length);
+    loadPage(allPages[randomIndex].id);
+  }
+
+  function handleSearch() {
+    const query = dom.searchInput.value.trim().toLowerCase();
+    if (!query) {
+      dom.searchResults.classList.remove('active');
+      return;
+    }
+
+    const results = [];
+    state.pages.forEach((page, id) => {
+      if (page.title.toLowerCase().includes(query) ||
+          (page.tags && page.tags.some(t => t.toLowerCase().includes(query)))) {
+        results.push({ id, title: page.title });
+      }
+    });
+
+    if (results.length > 0) {
+      let html = '';
+      results.forEach(r => {
+        html += `<div class="search-result-item" onclick="wiki.loadPage('${r.id}')">${escapeHtml(r.title)}</div>`;
+      });
+      dom.searchResults.innerHTML = html;
+      dom.searchResults.classList.add('active');
+    } else {
+      dom.searchResults.innerHTML = '<div class="search-result-item">无结果</div>';
+      dom.searchResults.classList.add('active');
+    }
+  }
+
+  function searchTag(tag) {
+    dom.searchInput.value = tag;
+    handleSearch();
+  }
+
+  function hideLoading() {
+    dom.loadingOverlay.classList.add('hidden');
+  }
+
+  function renderError(message) {
+    dom.mainContent.innerHTML = `
+      <div class="warning-box">
+        <span class="label">错误</span>
+        ${escapeHtml(message)}
+      </div>
+    `;
+  }
+
+  function render404(pageId) {
+    const requestedId = escapeHtml(pageId || 'unknown');
+    dom.mainContent.innerHTML = `
+      <div class="content-wrapper">
+        <div class="content-main">
+          <div class="breadcrumb"><a onclick="wiki.goHome()">首页</a> <span class="sep">&gt;</span> 404</div>
+          <div class="class-banner" style="border-color: var(--accent-red); background: rgba(192, 57, 43, 0.06);">
+            <div class="class-icon" style="border-color: var(--accent-red); color: var(--accent-red);">404</div>
+            <div class="class-text" style="color: var(--accent-red);">页面未找到</div>
+            <div class="class-meta">ERR_PAGE_NOT_FOUND</div>
+          </div>
+          <h1 class="page-title">档案不存在</h1>
+          <div class="page-subtitle">请求的条目无法在档案库中定位</div>
+          <div class="section">
+            <h2>错误详情</h2>
+            <p>档案编号: <span class="code-term">${requestedId}</span></p>
+            <p>状态: <span class="redacted-text">未归档</span></p>
+            <p>可能原因:</p>
+            <ul>
+              <li>条目编号输入错误</li>
+              <li>该档案已被移除或重新分类</li>
+              <li>您没有足够的权限访问此条目</li>
+            </ul>
+          </div>
+          <div class="section">
+            <h2>建议操作</h2>
+            <p><a class="quick-nav-btn" onclick="wiki.goHome()" style="display:inline-block;margin-right:10px;">返回首页</a>
+            <a class="quick-nav-btn" onclick="history.back()" style="display:inline-block;">返回上一页</a></p>
+          </div>
+          <div class="page-footer">
+            错误代码: 404 | 请求ID: ${Date.now().toString(36).toUpperCase()}<br>
+            ALPHA ARCHIVE // 未经授权访问将触发追踪协议
+          </div>
+        </div>
+        <div class="content-sidebar"></div>
+      </div>
+    `;
+    state.currentPageId = null;
+    updateQuickNav();
+    renderSidebar();
+    const url = new URL(window.location);
+    url.searchParams.set('page', requestedId);
+    window.history.pushState({}, '', url);
+  }
+
+  function renderLockedPage(title) {
+    const pageTitle = escapeHtml(title || '未命名条目');
+    dom.mainContent.innerHTML = `
+      <div class="content-wrapper">
+        <div class="content-main">
+          <div class="breadcrumb"><a onclick="wiki.goHome()">首页</a> <span class="sep">&gt;</span> 锁定</div>
+          <div class="class-banner" style="border-color: var(--accent-amber); background: rgba(212, 160, 23, 0.06);">
+            <div class="class-icon" style="border-color: var(--accent-amber); color: var(--accent-amber);">L4+</div>
+            <div class="class-text" style="color: var(--accent-amber);">条目编写中</div>
+            <div class="class-meta">STATUS_LOCKED</div>
+          </div>
+          <h1 class="page-title">${pageTitle}</h1>
+          <div class="page-subtitle">该条目尚未编写完成</div>
+          <div class="section">
+            <h2>状态说明</h2>
+            <p>此档案条目目前正在<span class="highlight">编写中</span>或<span class="highlight">审核中</span>，暂时无法访问完整内容。</p>
+            <p>如需查看或参与编写，请访问我们的 GitHub 仓库：</p>
+          </div>
+          <div class="section">
+            <h2>参与贡献</h2>
+            <p><a class="quick-nav-btn" href="https://github.com/Ethernos-Studio/AA" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-right:10px;">访问 GitHub 仓库</a>
+            <a class="quick-nav-btn" onclick="wiki.goHome()" style="display:inline-block;">返回首页</a></p>
+            <p style="margin-top:16px;font-size:12px;color:var(--text-muted);">仓库地址: github.com/Ethernos-Studio/AA</p>
+          </div>
+          <div class="page-footer">
+            状态: LOCKED | 最后检查: ${new Date().toLocaleString('zh-CN')}<br>
+            ALPHA ARCHIVE // 未经授权访问将触发追踪协议
+          </div>
+        </div>
+        <div class="content-sidebar"></div>
+      </div>
+    `;
+    state.currentPageId = null;
+    updateQuickNav();
+    renderSidebar();
+  }
+
+  function escapeHtml(text) {
+    if (typeof text !== 'string') return text;
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  return {
+    init,
+    loadPage,
+    prevPage,
+    nextPage,
+    goHome,
+    randomPage,
+    searchTag,
+    refreshPageContent,
+    handleSidebarAction,
+    renderLockedPage
+  };
+})();
+
+const wiki = WikiEngine;
+document.addEventListener('DOMContentLoaded', wiki.init);
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{
+  "id": "sr-lab",
+  "title": "SR实验室",
+  "subtitle": "Special Research Laboratory / 五角大楼黑科节点 —— 深渊科技的铸造者",
+  "archiveId": "AZ-ORG-003",
+  "clearance": "L4",
+  "lastUpdated": "2031-09-24",
+  "tags": ["组织", "技术", "SR实验室", "L4", "深渊科技", "神经认证", "时晶体"],
+  "contentFile": "pages/sr-lab.md",
+  "banner": {
+    "level": "L4",
+    "text": "该文档需 L4 及以上保密权限访问。\n涉及五角大楼外包项目与未公开军事科技。",
+    "meta": "EPUN-WAR-ARCH\nSERIES AZ-ORG",
+    "color": "red"
+  },
+  "infobox": {
+    "title": "Entity Profile",
+    "fields": [
+      { "label": "编号", "value": "AZ-ORG-003" },
+      { "label": "全称", "value": "Special Research Laboratory" },
+      { "label": "分类", "value": "军事科研外包复合体 / 黑科节点" },
+      { "label": "状态", "value": "<span class='highlight'>部分活跃（SR-3已覆灭）</span>" },
+      { "label": "隶属", "value": "<span class='censored'>[五角大楼 ████ 办公室]</span>" },
+      { "label": "总部", "value": "<span class='redacted'>███████</span>" },
+      { "label": "前沿站点", "value": "SR-3基地（已终止）" },
+      { "label": "核心技术", "value": "深渊科技 / SR神经认证 / 时晶逆向" },
+      { "label": "关联机构", "value": "WUN, EPUN战档司, EFGH（历史）" },
+      { "label": "主要威胁", "value": "DeWorld技术渗透 / 装备反噬" }
+    ]
+  },
+  "categories": ["entities", "organizations"],
+  "relations": {
+    "parent": null,
+    "subordinates": ["sr-3"],
+    "associates": [
+      { "id": "epun", "type": "情报共享", "description": "向EPUN/WUN提供逆向分析数据" },
+      { "id": "deworld", "type": "被渗透", "description": "核心技术被DeWorld窃取与反向利用" },
+      { "id": "wun", "type": "隶属", "description": "WUN特种装备技术供应方" },
+      { "id": "efgh-alpha", "type": "历史关联", "description": "与EFGH存在技术合作与人员流动" }
+    ]
+  },
+  "autoGenerate": {
+    "breadcrumb": true,
+    "categoryNav": true,
+    "relatedPages": true
+  },
+  "metadata": {
+    "author": "EPUN战档司 · 黑域情报回收组",
+    "reviewer": "L4审核员",
+    "version": "1.0.0"
+  }
+}

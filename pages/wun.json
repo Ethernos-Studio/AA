@@ -1,0 +1,54 @@
+{
+  "id": "wun",
+  "title": "WUN",
+  "subtitle": "United Nations Standing Army / 联合国常备军 —— EPUN的快速反应之刃",
+  "archiveId": "AZ-ORG-004",
+  "clearance": "L3",
+  "lastUpdated": "2031-09-24",
+  "tags": ["组织", "军事", "WUN", "L3", "常备军", "封锁"],
+  "contentFile": "pages/wun.md",
+  "banner": {
+    "level": "L3",
+    "text": "该文档需 L3 及以上保密权限访问。\n涉及现役军事部署与人员坐标。",
+    "meta": "EPUN-WAR-ARCH\nSERIES AZ-ORG",
+    "color": "blue"
+  },
+  "infobox": {
+    "title": "Entity Profile",
+    "fields": [
+      { "label": "编号", "value": "AZ-ORG-004" },
+      { "label": "全称", "value": "United Nations Standing Army" },
+      { "label": "别名", "value": "联合国常备军 / 快速反应部队" },
+      { "label": "分类", "value": "超国家联合武装力量" },
+      { "label": "状态", "value": "<span class='highlight'>活跃（封锁与侦察阶段）</span>" },
+      { "label": "成立", "value": "2028年9月（随EPUN独立）" },
+      { "label": "隶属", "value": "EPUN战略委员会" },
+      { "label": "现役规模", "value": "<span class='censored'>[编制需L4权限]</span>" },
+      { "label": "核心任务", "value": "封锁线驻防 / 特种侦察 / 极端环境作战" },
+      { "label": "装备供应", "value": "SR实验室（已暂停合作）" },
+      { "label": "主要敌对", "value": "DeWorld / 流民武装 / 失控AI" }
+    ]
+  },
+  "categories": ["entities", "organizations"],
+  "relations": {
+    "parent": "epun",
+    "subordinates": ["wun-soc", "wun-biochem"],
+    "associates": [
+      { "id": "epun", "type": "隶属", "description": "直接受EPUN战略委员会指挥" },
+      { "id": "sr-lab", "type": "装备供应", "description": "SR神经认证与时晶防护装备原供应方" },
+      { "id": "deworld", "type": "敌对", "description": "主要作战对象" },
+      { "id": "alpha-zone", "type": "驻防", "description": "封锁线部署区域" },
+      { "id": "efgh-alpha", "type": "禁区", "description": "2031年橙色预警侦察禁区" }
+    ]
+  },
+  "autoGenerate": {
+    "breadcrumb": true,
+    "categoryNav": true,
+    "relatedPages": true
+  },
+  "metadata": {
+    "author": "EPUN战档司 · 军事档案处",
+    "reviewer": "L3审核员",
+    "version": "1.0.0"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "epun",
+  "title": "EPUN",
+  "subtitle": "Earth United Nations / 地球联合国 — 超国家封锁联合体",
+  "archiveId": "AZ-ORG-001",
+  "clearance": "L3",
+  "lastUpdated": "2031-09-24",
+  "tags": ["组织", "军事", "封锁", "L3"],
+  "contentFile": "pages/epun.md",
+  "banner": {
+    "level": "L3",
+    "text": "该文档需 L3 及以上保密权限访问。\n未经授权的扩散将触发[追踪协议]。",
+    "meta": "EPUN-WAR-ARCH\nSERIES AZ-ORG",
+    "color": "amber"
+  },
+  "infobox": {
+    "title": "Entity Profile",
+    "fields": [
+      { "label": "编号", "value": "AZ-ORG-001" },
+      { "label": "分类", "value": "超国家军事-政治联合体" },
+      { "label": "状态", "value": "<span class='highlight'>活跃（封锁阶段）</span>" },
+      { "label": "成立", "value": "2028年9月" },
+      { "label": "成员国", "value": "20 <span class='censored'>[完整列表需L4权限]</span>" },
+      { "label": "总部", "value": "<span class='redacted'>███████</span>" },
+      { "label": "关联机构", "value": "WUN, EPUN医疗纵队, 战档司" },
+      { "label": "敌对", "value": "DeWorld（净化者/毁灭派）" }
+    ]
+  },
+  "categories": ["entities", "organizations"],
+  "relations": {
+    "parent": null,
+    "subordinates": ["wun"],
+    "associates": [
+      { "id": "deworld", "type": "敌对", "description": "主要敌对组织" },
+      { "id": "alpha-zone", "type": "管辖", "description": "封锁区域" }
+    ]
+  },
+  "autoGenerate": {
+    "breadcrumb": true,
+    "categoryNav": true,
+    "relatedPages": true
+  },
+  "metadata": {
+    "author": "EPUN战档司",
+    "reviewer": "L3审核员",
+    "version": "2.1.0"
+  }
+}

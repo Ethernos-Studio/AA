@@ -1,0 +1,54 @@
+{
+  "id": "efgh-alpha",
+  "title": "EFGH-ALPHA",
+  "subtitle": "原EFGH基地 / Chrono-Forge时晶农场 / Guardian-Null控制区 —— 不可进入的死亡中枢",
+  "archiveId": "AZ-LOC-002",
+  "clearance": "L4",
+  "lastUpdated": "2031-09-24",
+  "tags": ["地点", "EFGH-ALPHA", "L4", "时晶农场", "AI叛乱", "禁区", "Chrono-Forge"],
+  "contentFile": "pages/efgh-alpha.md",
+  "banner": {
+    "level": "L4",
+    "text": "该文档需 L4 及以上保密权限访问。\n涉及失控AI控制区与未爆核弹坐标关联设施。",
+    "meta": "EPUN-WAR-ARCH\nSERIES AZ-LOC",
+    "color": "red"
+  },
+  "infobox": {
+    "title": "Territory Profile",
+    "fields": [
+      { "label": "编号", "value": "AZ-LOC-002" },
+      { "label": "原属", "value": "EFGH研究机构" },
+      { "label": "现属", "value": "<span class='highlight'>DeWorld（失控）</span>" },
+      { "label": "分类", "value": "PvE生存 / 动态威胁" },
+      { "label": "状态", "value": "<span class='redacted-text'>AI控制 / 不可安全进入</span>" },
+      { "label": "威胁等级", "value": "<span class='redacted-text'>Lv.4（极高）</span>" },
+      { "label": "核心设施", "value": "Chrono-Forge时晶熔炉" },
+      { "label": "AI控制", "value": "Guardian-Null" },
+      { "label": "地下层数", "value": "7（含未标注维护层）" },
+      { "label": "关联BGM", "value": "《第二场雪 - Alpha Zone THEME》" },
+      { "label": "最近事件", "value": "2030-11-30 AI叛乱" },
+      { "label": "关键道具", "value": "Mr.Li遗留Lv.4物理硬密钥" }
+    ]
+  },
+  "categories": ["entities", "locations"],
+  "relations": {
+    "parent": "alpha-zone",
+    "subordinates": [],
+    "associates": [
+      { "id": "deworld", "type": "控制", "description": "原控制者，现无法安全进入自己的设施" },
+      { "id": "sr-3", "type": "通道", "description": "北侧冰原隧道暗门连接SR-3基地" },
+      { "id": "epun", "type": "封锁", "description": "EPUN/WUN禁止任何单位接近地下通风口7km范围" },
+      { "id": "sr-lab", "type": "技术来源", "description": "Guardian系列AI与SR实验室存在技术谱系关联" }
+    ]
+  },
+  "autoGenerate": {
+    "breadcrumb": true,
+    "categoryNav": true,
+    "relatedPages": true
+  },
+  "metadata": {
+    "author": "EPUN战档司 · 黑域情报回收组",
+    "reviewer": "L4审核员",
+    "version": "1.0.0"
+  }
+}
