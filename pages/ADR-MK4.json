@@ -1,0 +1,39 @@
+{
+  "id": "adr-mk4",
+  "title": "ADR-MK4",
+  "subtitle": "线索 - ADR MK4",
+  "archiveId": "AZ-CLU-001",
+  "clearance": "L3",
+  "lastUpdated": "2031-09-24",
+  "tags": ["线索"],
+  "contentFile": "pages/ADR-MK4.md",
+  "banner": {
+    "level": "L3",
+    "text": "该文档需 L3 及以上保密权限访问。",
+    "meta": "EPUN-WAR-ARCH\nSERIES AZ-LOC",
+    "color": "amber"
+  },
+  "infobox": {
+    "title": "Territory Profile",
+    "fields": [
+      { "label": "编号", "value": "AZ-CLU-001" },
+      { "label": "别名", "value": "ADR MK4" }
+    ]
+  },
+  "categories": ["entities", "clues"],
+  "relations": {
+    "parent": null,
+    "subordinates": [""],
+    "associates": []
+  },
+  "autoGenerate": {
+    "breadcrumb": true,
+    "categoryNav": true,
+    "relatedPages": true
+  },
+  "metadata": {
+    "author": "原持有者未知 | 整理: 战档司",
+    "reviewer": "L3审核员",
+    "version": "1.0.0"
+  }
+}

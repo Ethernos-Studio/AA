@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Blockquote Test</title>
+<style>
+  body { background: #08080c; color: #b0b0b8; font-family: monospace; padding: 20px; }
+  blockquote {
+    border-left: 3px solid #4a8bc2;
+    background: rgba(74, 139, 194, 0.06);
+    padding: 12px 16px;
+    margin: 16px 0;
+    font-style: italic;
+    color: #e0e0e5;
+  }
+  .test { margin: 20px 0; padding: 10px; border: 1px solid #333; }
+</style>
+</head>
+<body>
+<h2>Blockquote Parser Test</h2>
+
+<div id="output"></div>
+
+<script>
+function parseBlockquotes(md) {
+  const lines = md.split('\n');
+  const result = [];
+  let inBlockquote = false;
+  let blockquoteLines = [];
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    
+    // Check if line starts with > (possibly with leading spaces)
+    // Capture everything after > and optional space
+    const match = line.match(/^\s*>\s?(.*)$/);
+    
+    if (match) {
+      // This is a blockquote line
+      if (!inBlockquote) {
+        inBlockquote = true;
+      }
+      // match[1] is the content after >
+      blockquoteLines.push(match[1]);
+    } else {
+      // Not a blockquote line
+      if (inBlockquote) {
+        // Close the current blockquote
+        result.push(`<blockquote><p>${blockquoteLines.join('<br>')}</p></blockquote>`);
+        inBlockquote = false;
+        blockquoteLines = [];
+      }
+      result.push(line);
+    }
+  }
+  
+  // Close any remaining open blockquote
+  if (inBlockquote) {
+    result.push(`<blockquote><p>${blockquoteLines.join('<br>')}</p></blockquote>`);
+  }
+  
+  return result.join('\n');
+}
+
+// Test cases
+const testCases = [
+  {
+    name: "Simple blockquote",
+    input: "> Hello world",
+    expected: "<blockquote><p>Hello world</p></blockquote>"
+  },
+  {
+    name: "Blockquote with >",
+    input: "> *[ADR机械女声]*",
+    expected: "<blockquote><p>*[ADR机械女声]*</p></blockquote>"
+  },
+  {
+    name: "Multiple lines",
+    input: "> Line 1\n> Line 2",
+    expected: "<blockquote><p>Line 1<br>Line 2</p></blockquote>"
+  },
+  {
+    name: "Empty blockquote line",
+    input: "> Line 1\n>\n> Line 2",
+    expected: "<blockquote><p>Line 1<br><br>Line 2</p></blockquote>"
+  }
+];
+
+let output = '';
+testCases.forEach(tc => {
+  const result = parseBlockquotes(tc.input);
+  const pass = result === tc.expected;
+  output += `<div class="test">`;
+  output += `<h3>${pass ? 'PASS' : 'FAIL'}: ${tc.name}</h3>`;
+  output += `<p>Input: ${JSON.stringify(tc.input)}</p>`;
+  output += `<p>Expected: ${JSON.stringify(tc.expected)}</p>`;
+  output += `<p>Got: ${JSON.stringify(result)}</p>`;
+  output += `</div>`;
+});
+
+// Real content test
+const realContent = `**[播放记录 #0017]**
+
+> *[ADR机械女声，音质因电量不足而断续]*
+>
+> \`EPUN-ADR-MK4。录音开始。\`
+
+> *[沉重的呼吸声]*
+>
+> "...测试。还在录吗？"`;
+
+output += `<div class="test">`;
+output += `<h3>Real Content Test</h3>`;
+output += `<pre>${realContent}</pre>`;
+output += `<h4>Parsed Result:</h4>`;
+output += parseBlockquotes(realContent);
+output += `</div>`;
+
+document.getElementById('output').innerHTML = output;
+</script>
+</body>
+</html>

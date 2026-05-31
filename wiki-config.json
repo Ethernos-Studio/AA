@@ -24,6 +24,13 @@
       "description": "地理区域与场所",
       "parent": "entities",
       "pages": ["alpha-zone"]
+    },
+    "clues": {
+      "id": "clues",
+      "name": "线索",
+      "description": "用于解决谜题的信息",
+      "parent": "entities",
+      "pages": ["adr-mk4"]
     }
   },
   "pageRegistry": [
@@ -35,6 +42,7 @@
     { "id": "efgh", "file": "pages/efgh.json" },
     { "id": "alpha-zone", "file": "pages/alpha-zone.json" },
     { "id": "efgh-alpha", "file": "pages/efgh-alpha.json" },
-    { "id": "wun", "file": "pages/wun.json" }
+    { "id": "wun", "file": "pages/wun.json" },
+    { "id": "adr-mk4", "file": "pages/ADR-MK4.json" }
   ]
 }

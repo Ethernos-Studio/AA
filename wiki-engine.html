@@ -350,6 +350,23 @@
   .censored { color: var(--text-muted); font-style: italic; }
   .highlight { color: var(--accent-amber); }
 
+  blockquote {
+    border-left: 3px solid var(--accent-blue);
+    background: rgba(74, 139, 194, 0.06);
+    padding: 12px 16px;
+    margin: 16px 0;
+    color: var(--text-heading);
+  }
+
+  blockquote p {
+    margin: 0;
+    line-height: 1.8;
+  }
+
+  blockquote p + p {
+    margin-top: 8px;
+  }
+
   .code-term {
     font-family: var(--font-mono);
     background: rgba(255,255,255,0.04);
@@ -1454,6 +1471,10 @@ const WikiEngine = (function() {
       md = md.replace(breadcrumbMatch[0], '');
     }
 
+    // Parse blockquotes (> ) first - O(n) complexity
+    // Must be before list parsers to avoid conflicts
+    md = parseBlockquotes(md);
+
     // Parse ordered lists (1. 2. 3.) - must be before inline styles
     md = parseOrderedLists(md);
     
@@ -1469,6 +1490,9 @@ const WikiEngine = (function() {
     
     // Bold text - process after lists to handle ** inside list items
     md = md.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+    // Italic text - process after bold to handle * inside **
+    md = md.replace(/\*(.+?)\*/g, '<em>$1</em>');
 
     md = md.replace(/^## (.*$)/gim, (match, text) => {
       const id = 'section-' + Math.random().toString(36).substr(2, 9);
@@ -1629,6 +1653,52 @@ const WikiEngine = (function() {
         result.push('</ul>');
         indentStack.pop();
       }
+    }
+    
+    return result.join('\n');
+  }
+
+  // O(n) complexity - Markdown blockquote parser
+  // Supports: > text
+  //           > line2
+  // Creates: <blockquote><p>text<br>line2</p></blockquote>
+  function parseBlockquotes(md) {
+    // Normalize line endings to handle Windows \r\n
+    const normalizedMd = md.replace(/\r\n/g, '\n');
+    const lines = normalizedMd.split('\n');
+    const result = [];
+    let inBlockquote = false;
+    let blockquoteLines = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Check if line starts with > (possibly with leading spaces)
+      // Capture everything after > and optional space
+      const match = line.match(/^\s*>\s?(.*)$/);
+      
+      if (match) {
+        // This is a blockquote line
+        if (!inBlockquote) {
+          inBlockquote = true;
+        }
+        // match[1] is the content after >
+        blockquoteLines.push(match[1]);
+      } else {
+        // Not a blockquote line
+        if (inBlockquote) {
+          // Close the current blockquote
+          result.push(`<blockquote><p>${blockquoteLines.join('<br>')}</p></blockquote>`);
+          inBlockquote = false;
+          blockquoteLines = [];
+        }
+        result.push(line);
+      }
+    }
+    
+    // Close any remaining open blockquote
+    if (inBlockquote) {
+      result.push(`<blockquote><p>${blockquoteLines.join('<br>')}</p></blockquote>`);
     }
     
     return result.join('\n');
