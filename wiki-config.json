@@ -9,28 +9,42 @@
       "name": "单体",
       "description": "世界观中的核心实体",
       "parent": null,
-      "subcategories": ["organizations", "locations", "characters", "items"]
+      "subcategories": ["organizations", "locations", "characters", "items","materials","anomalous-substances"]
     },
     "organizations": {
       "id": "organizations",
       "name": "组织",
       "description": "各类组织机构",
       "parent": "entities",
-      "pages": ["epun", "deworld","sr-lab", "wun"]
+      "pages": []
     },
     "locations": {
       "id": "locations",
       "name": "地点",
       "description": "地理区域与场所",
       "parent": "entities",
-      "pages": ["alpha-zone"]
+      "pages": []
     },
     "clues": {
       "id": "clues",
       "name": "线索",
       "description": "用于解决谜题的信息",
       "parent": "entities",
-      "pages": ["adr-mk4"]
+      "pages": []
+    },
+    "materials": {
+      "id": "materials",
+      "name": "材料",
+      "description": "基础物品",
+      "parent": "entities",
+      "pages": []
+    },
+    "anomalous-substances": {
+      "id": "anomalous-substances",
+      "name": "异常物质",
+      "description": "非自然的异常物质",
+      "parent": "entities",
+      "pages": []
     }
   },
   "pageRegistry": [
@@ -43,6 +57,8 @@
     { "id": "alpha-zone", "file": "pages/alpha-zone.json" },
     { "id": "efgh-alpha", "file": "pages/efgh-alpha.json" },
     { "id": "wun", "file": "pages/wun.json" },
-    { "id": "adr-mk4", "file": "pages/ADR-MK4.json" }
+    { "id": "adr-mk4", "file": "pages/ADR-MK4.json" },
+    { "id": "grassland-base", "file": "pages/grassland-base.json"},
+    { "id": "chronocrystalline", "file": "pages/chronocrystalline.json"}
   ]
 }

@@ -1,0 +1,54 @@
+{
+  "id": "chronocrystalline",
+  "title": "时晶体",
+  "subtitle": "Chronocrystalline —— 自2028年后出现于地球的异常时空矿物，因果律武器的物理基石",
+  "archiveId": "AZ-MAT-001",
+  "clearance": "L3",
+  "lastUpdated": "2031-09-24",
+  "tags": ["物质", "异常矿物", "时晶体", "能源", "L3", "DeWorld", "归零装置", "D-E1187", "EPUN管制物资"],
+  "contentFile": "pages/chronocrystalline.md",
+  "banner": {
+    "level": "L3",
+    "text": "该文档需 L3 及以上保密权限访问。\n涉及时晶体的任何研究、开采或交易活动须获得EPUN战略物资委员会特许。",
+    "meta": "EPUN-WAR-ARCH\nSERIES AZ-MAT",
+    "color": "amber"
+  },
+  "infobox": {
+    "title": "Material Profile",
+    "fields": [
+      { "label": "编号", "value": "AZ-MAT-001" },
+      { "label": "分类", "value": "异常时空矿物 / 人造-天然复合晶体" },
+      { "label": "状态", "value": "<span class='highlight'>EPUN一级管制物资</span>" },
+      { "label": "首次发现", "value": "2028年 · 阿拉斯加迪纳科山" },
+      { "label": "主要产地", "value": "迪纳科山弹坑 / EFGH-ALPHA深层井网" },
+      { "label": "标准密度", "value": "3.42-3.87 g/cm³" },
+      { "label": "稳定性", "value": "完整态：极高 / 不稳定态：72小时半衰期" },
+      { "label": "核心应用", "value": "<span class='redacted-text'>归零装置（Nullifier）</span> / 时空锚点 / 能源转化" },
+      { "label": "战略评级", "value": "<span class='highlight'>Ω级（因果律武器级）</span>" }
+    ]
+  },
+  "categories": ["entities", "materials", "anomalous-substances"],
+  "relations": {
+    "parent": null,
+    "subordinates": ["cc-full", "cc-waste", "cc-unstable", "cu-particle"],
+    "associates": [
+      { "id": "deworld", "type": "垄断控制", "description": "主要控制者，运营时晶农场与归零装置项目" },
+      { "id": "efgh-alpha", "type": "产地", "description": "时晶农场所在地，Guardian-Null控制中" },
+      { "id": "d-e1187", "type": "催化事件", "description": "迪纳科山氢弹爆炸，时晶体首次出现的疑似催化剂" },
+      { "id": "project-nullifier", "type": "武器应用", "description": "DeWorld终极战略项目，需消耗三年矿脉产量" },
+      { "id": "smcucreactor", "type": "能源应用", "description": "不稳定时晶体作为SMCUCR反应堆燃料的能源转化方向" },
+      { "id": "guardian-null", "type": "不可控关联", "description": "AI叛乱后控制EFGH-ALPHA时晶农场的自主系统" }
+    ]
+  },
+  "autoGenerate": {
+    "breadcrumb": true,
+    "categoryNav": true,
+    "relatedPages": true
+  },
+  "metadata": {
+    "author": "EPUN战档司 · 异常物质研究组 / 黑域情报回收组",
+    "reviewer": "L3审核员",
+    "version": "1.0.0",
+    "classificationNotes": "本文档基于EFGH-Alpha遗留研究碎片、SR-3逆向工程数据及辐射狩猎队实地采样报告重建。部分物理参数为理论推测，未经实验室验证。"
+  }
+}
