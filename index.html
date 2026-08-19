@@ -122,7 +122,13 @@
     height: 100%;
     overflow-y: auto;
     z-index: 90;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
   }
+
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
 
   .nav-section { margin-bottom: 24px; padding: 0 16px; }
 
@@ -570,6 +576,23 @@
     color: var(--text-heading);
   }
 
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: var(--font-mono);
+  }
+
+  .menu-toggle:hover { border-color: var(--accent-amber); color: var(--accent-amber); }
+
+  .sidebar-backdrop { display: none; }
+
   .tag-list {
     display: flex;
     flex-wrap: wrap;
@@ -873,11 +896,43 @@
   }
 
   @media (max-width: 768px) {
-    .sidebar { display: none; }
-    .main { margin-left: 0; padding: 20px; padding-bottom: 100px; }
-    .infobox { float: none; width: 100%; margin: 0 0 20px; }
-    .quick-nav { left: 0; padding: 12px 20px; flex-wrap: wrap; gap: 8px; }
-    .search-box input { width: 150px; }
+    .menu-toggle { display: block; }
+    .site-header { padding: 0 12px; gap: 10px; }
+    .site-brand { font-size: 11px; }
+    .connection-status { font-size: 10px; }
+    .sidebar {
+      display: block;
+      top: 48px;
+      left: 0;
+      width: 240px;
+      height: calc(100% - 48px);
+      transform: translateX(-100%);
+      transition: transform 0.2s ease;
+      z-index: 200;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-backdrop {
+      display: block;
+      position: fixed;
+      top: 48px; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .sidebar-backdrop.open { opacity: 1; pointer-events: auto; }
+    .main { margin-left: 0; padding: 20px 16px; padding-bottom: 120px; }
+    .page-title { font-size: 22px; }
+    .content-wrapper { flex-direction: column; gap: 20px; }
+    .content-main { max-width: 100%; }
+    .content-sidebar { width: 100%; }
+    .infobox { float: none; width: 100%; margin: 0; position: static; }
+    .wiki-table { display: block; overflow-x: auto; }
+    .quick-nav { left: 0; padding: 10px 12px; flex-wrap: wrap; gap: 8px; font-size: 11px; }
+    .quick-nav-group { gap: 8px; }
+    .search-box input { width: 120px; }
+    blockquote { padding: 10px 12px; }
   }
 
   @media print {
@@ -899,6 +954,7 @@
 </div>
 
 <header class="site-header">
+  <button class="menu-toggle" id="menuToggle" onclick="wiki.toggleSidebar()" aria-label="打开导航菜单">☰</button>
   <div class="site-brand" onclick="wiki.goHome()">
     <span class="domain">aa.ethernos.net</span>
     <span class="sep">/</span>
@@ -917,6 +973,8 @@
   <main class="main" id="mainContent">
   </main>
 </div>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="wiki.closeSidebar()"></div>
 
 <div class="quick-nav" id="quickNav">
   <div class="quick-nav-group">
@@ -1152,6 +1210,17 @@ const WikiEngine = (function() {
     }
   }
 
+  // Mobile drawer navigation
+  function toggleSidebar() {
+    dom.sidebar.classList.toggle('open');
+    document.getElementById('sidebarBackdrop').classList.toggle('open');
+  }
+
+  function closeSidebar() {
+    dom.sidebar.classList.remove('open');
+    document.getElementById('sidebarBackdrop').classList.remove('open');
+  }
+
   async function loadPage(pageId) {
     if (!pageId || !state.pages.has(pageId)) {
       render404(pageId);
@@ -1172,6 +1241,7 @@ const WikiEngine = (function() {
     renderPage(page);
     updateQuickNav();
     renderSidebar();
+    closeSidebar();
     window.scrollTo(0, 0);
 
     const url = new URL(window.location);
@@ -2019,7 +2089,9 @@ const WikiEngine = (function() {
     searchTag,
     refreshPageContent,
     handleSidebarAction,
-    renderLockedPage
+    renderLockedPage,
+    toggleSidebar,
+    closeSidebar
   };
 })();
 
