@@ -38,9 +38,9 @@ E:\spj\EWD\
     ↓
 wiki-engine.html 加载
     ↓
-并行加载 wiki-config.json + wiki-sidebar.json
+并行加载 wiki-config.json + wiki-sidebar.json + 页面元数据(pages/*.json)
     ↓
-根据配置预加载 pages/*.md
+按需加载当前页面的 pages/*.md（其余页面首次访问时再加载）
     ↓
 解析Markdown → 渲染HTML
     ↓
@@ -259,17 +259,16 @@ const state = {
 - **randomPage**: 随机跳转
 
 ### 6.3 缓存策略
-- 启动时预加载所有Markdown文件
-- 使用Map存储，O(1)查询
-- 无缓存失效机制（静态文件假设不变）
+- 启动时仅并行加载页面元数据（JSON），Markdown 内容按需懒加载
+- 使用Map存储，O(1)查询；内容加载一次后驻留内存
 
 ---
 
 ## 7. 性能优化
 
 ### 7.1 加载优化
-- 并行加载配置文件
-- 异步预加载页面内容
+- 并行加载配置文件与页面元数据
+- Markdown 内容懒加载（首次访问时按需获取）
 - 加载动画提升感知性能
 
 ### 7.2 渲染优化

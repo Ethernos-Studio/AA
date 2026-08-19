@@ -1017,13 +1017,14 @@ const WikiEngine = (function() {
       const response = await fetch('wiki-config.json' + getCacheBuster());
       if (!response.ok) throw new Error('Config not found');
       state.config = await response.json();
-      await loadSidebar();
-      await preloadPages();
-      hideLoading();
+      // Sidebar and page metadata are independent - load in parallel
+      await Promise.all([loadSidebar(), preloadPageMeta()]);
 
       const urlParams = new URLSearchParams(window.location.search);
       const pageId = urlParams.get('page') || state.config.defaultPage;
-      loadPage(pageId);
+      // Only fetch the current page's Markdown; others load on demand
+      await loadPage(pageId);
+      hideLoading();
     } catch (err) {
       console.error('Failed to load config:', err);
       renderError('配置文件加载失败，请检查 wiki-config.json 是否存在');
@@ -1050,41 +1051,47 @@ const WikiEngine = (function() {
     return `?_=${CACHE_VERSION}_${Math.floor(Date.now() / 60000)}`;
   }
   
-  // Disk I/O: O(n) fetch with cache-busting query param
-  async function preloadPages() {
+  // Disk I/O: fetch all page metadata (JSON) in parallel - O(n) requests, 1 round trip
+  // Markdown content is NOT fetched here; it loads lazily on first view
+  async function preloadPageMeta() {
     if (!state.config || !state.config.pageRegistry) return;
     const registry = state.config.pageRegistry;
-    
     const cacheBuster = getCacheBuster();
-    
-    for (const entry of registry) {
+
+    await Promise.all(registry.map(async (entry) => {
       try {
-        // Fetch JSON config with cache buster
         const configResponse = await fetch(entry.file + cacheBuster);
-        if (!configResponse.ok) continue;
+        if (!configResponse.ok) return;
         const pageConfig = await configResponse.json();
-        
-        let content = '';
-        if (pageConfig.contentFile) {
-          // Fetch Markdown content with cache buster
-          // Uses page lastUpdated as additional cache key if available
-          const contentCacheKey = pageConfig.lastUpdated 
-            ? `&t=${pageConfig.lastUpdated}` 
-            : '';
-          const contentResponse = await fetch(pageConfig.contentFile + cacheBuster + contentCacheKey);
-          if (contentResponse.ok) {
-            content = await contentResponse.text();
-          }
-        }
-        
         state.pages.set(entry.id, {
           ...pageConfig,
-          content: content
+          content: '',
+          contentLoaded: false
         });
       } catch (err) {
-        console.warn(`Failed to preload page: ${entry.id}`, err);
+        console.warn(`Failed to preload page meta: ${entry.id}`, err);
       }
+    }));
+  }
+
+  // Lazily fetch a page's Markdown content (once, then cached in memory) - O(1) disk I/O
+  async function ensurePageContent(pageId) {
+    const page = state.pages.get(pageId);
+    if (!page || !page.contentFile || page.contentLoaded) return;
+
+    try {
+      // Uses page lastUpdated as additional cache key if available
+      const contentCacheKey = page.lastUpdated
+        ? `&t=${page.lastUpdated}`
+        : '';
+      const contentResponse = await fetch(page.contentFile + getCacheBuster() + contentCacheKey);
+      if (contentResponse.ok) {
+        page.content = await contentResponse.text();
+      }
+    } catch (err) {
+      console.warn(`Failed to load page content: ${pageId}`, err);
     }
+    page.contentLoaded = true;
   }
   
   // Force refresh current page content - O(1) disk I/O
@@ -1101,6 +1108,7 @@ const WikiEngine = (function() {
       if (response.ok) {
         const newContent = await response.text();
         page.content = newContent;
+        page.contentLoaded = true;
         renderPage(page);
         console.log(`[WikiEngine] Page ${pageId} refreshed`);
       }
@@ -1144,7 +1152,7 @@ const WikiEngine = (function() {
     }
   }
 
-  function loadPage(pageId) {
+  async function loadPage(pageId) {
     if (!pageId || !state.pages.has(pageId)) {
       render404(pageId);
       return;
@@ -1159,6 +1167,7 @@ const WikiEngine = (function() {
     }
 
     state.currentPageId = pageId;
+    await ensurePageContent(pageId);
     const page = state.pages.get(pageId);
     renderPage(page);
     updateQuickNav();
