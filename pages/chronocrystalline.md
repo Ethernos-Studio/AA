@@ -7,6 +7,7 @@ id: chronocrystalline
 [物质](material) > [异常矿物](anomalous-mineral) > 时晶体
 [/breadcrumb]
 
+**注意：本文的时晶体均指Chronocrystalline-D1023.625，其他变种不在此文范围**
 
 | 属性               | 数据                                                         |
 | ------------------ | ------------------------------------------------------------ |
