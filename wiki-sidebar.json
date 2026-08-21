@@ -21,7 +21,9 @@
         { "type": "link", "id": "efgh-alpha", "title": "EFGH-ALPHA" },
         { "type": "link", "id": "grassland-base", "title": "GRASSLAND BASE"},
         { "type": "locked", "title": "SR-3基地" },
-        { "type": "locked", "title": "迪纳科山" }
+        { "type": "locked", "title": "迪纳科山" },
+        { "type": "subheader", "title": "关键设定"},
+        { "type": "link", "id":"chronocrystalline", "title": "时晶体"}
       ]
     },
     {
