@@ -1,7 +1,7 @@
 {
   "siteName": "Alpha Archive",
   "domain": "aa.ethernos.net",
-  "defaultPage": "epun",
+  "defaultPage": "index",
   "footer": "ALPHA ARCHIVE // 未经授权访问将触发追踪协议",
   "categories": {
     "entities": {
@@ -9,47 +9,71 @@
       "name": "单体",
       "description": "世界观中的核心实体",
       "parent": null,
-      "subcategories": ["organizations", "locations", "characters", "items","materials","anomalous-substances"]
+      "subcategories": ["organizations", "locations", "clues", "materials"]
     },
     "organizations": {
       "id": "organizations",
       "name": "组织",
       "description": "各类组织机构",
       "parent": "entities",
-      "pages": []
+      "archivePrefix": "ORG"
     },
     "locations": {
       "id": "locations",
       "name": "地点",
       "description": "地理区域与场所",
       "parent": "entities",
-      "pages": []
+      "archivePrefix": "LOC"
     },
     "clues": {
       "id": "clues",
       "name": "线索",
       "description": "用于解决谜题的信息",
       "parent": "entities",
-      "pages": []
+      "archivePrefix": "CLU"
     },
     "materials": {
       "id": "materials",
       "name": "材料",
       "description": "基础物品",
       "parent": "entities",
-      "pages": []
+      "subcategories": ["anomalous-substances"],
+      "archivePrefix": "MAT"
     },
     "anomalous-substances": {
       "id": "anomalous-substances",
       "name": "异常物质",
       "description": "非自然的异常物质",
-      "parent": "entities",
-      "pages": []
+      "parent": "materials"
     }
+  },
+  "plannedPages": {
+    "sr-3": { "id": "sr-3", "title": "SR-3基地" },
+    "dinako-mountain": { "id": "dinako-mountain", "title": "迪纳科山" },
+    "factory": { "id": "factory", "title": "工厂" },
+    "old-city": { "id": "old-city", "title": "旧城" },
+    "mining-zone": { "id": "mining-zone", "title": "矿区" },
+    "south-mountain": { "id": "south-mountain", "title": "南山" },
+    "vichy-village": { "id": "vichy-village", "title": "维奇新村" },
+    "no-mans-land": { "id": "no-mans-land", "title": "无人区" },
+    "purifier-corps": { "id": "purifier-corps", "title": "purifier-corps" },
+    "sr-lab-proxy": { "id": "sr-lab-proxy", "title": "sr-lab-proxy" },
+    "efgh-ordnance": { "id": "efgh-ordnance", "title": "军械部（Ordnance Division）" },
+    "efgh-bio": { "id": "efgh-bio", "title": "生物部（Biological Division）" },
+    "efgh-pharma": { "id": "efgh-pharma", "title": "药品部（Pharmaceutical Division）" },
+    "wun-soc": { "id": "wun-soc", "title": "特种作战司令部（SOC / Special Operations Command）" },
+    "wun-biochem": { "id": "wun-biochem", "title": "生化防护纵队" },
+    "cc-full": { "id": "cc-full", "title": "完整时晶体" },
+    "cc-waste": { "id": "cc-waste", "title": "废弃时晶体" },
+    "cc-unstable": { "id": "cc-unstable", "title": "不稳定时晶体" },
+    "cu-particle": { "id": "cu-particle", "title": "CU粒子" },
+    "d-e1187": { "id": "d-e1187", "title": "D-E1187事件" },
+    "project-nullifier": { "id": "project-nullifier", "title": "归零装置（Project Nullifier）" },
+    "smcucreactor": { "id": "smcucreactor", "title": "SMCUCR反应堆" },
+    "guardian-null": { "id": "guardian-null", "title": "Guardian-Null" }
   },
   "pageRegistry": [
     { "id": "index", "file": "pages/index.json" },
-    { "id": "recent", "file": "pages/recent.json" },
     { "id": "epun", "file": "pages/epun.json" },
     { "id": "deworld", "file": "pages/deworld.json" },
     { "id": "sr-lab", "file": "pages/sr-lab.json" },
@@ -58,7 +82,7 @@
     { "id": "efgh-alpha", "file": "pages/efgh-alpha.json" },
     { "id": "wun", "file": "pages/wun.json" },
     { "id": "adr-mk4", "file": "pages/ADR-MK4.json" },
-    { "id": "grassland-base", "file": "pages/grassland-base.json"},
-    { "id": "chronocrystalline", "file": "pages/chronocrystalline.json"}
+    { "id": "grassland-base", "file": "pages/grassland-base.json" },
+    { "id": "chronocrystalline", "file": "pages/chronocrystalline.json" }
   ]
 }

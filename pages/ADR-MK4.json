@@ -16,14 +16,14 @@
   "infobox": {
     "title": "Territory Profile",
     "fields": [
-      { "label": "编号", "value": "AZ-CLU-001" },
+      { "label": "编号", "auto": "archiveId" },
       { "label": "别名", "value": "ADR MK4" }
     ]
   },
   "categories": ["entities", "clues"],
   "relations": {
     "parent": null,
-    "subordinates": [""],
+    "subordinates": [],
     "associates": []
   },
   "autoGenerate": {

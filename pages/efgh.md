@@ -12,7 +12,7 @@ EFGH的覆灭不是被摧毁，而是被[redacted-text]消化[/redacted-text]。
 ## 历史时间线
 
 [timeline]
-**[redacted]████**
+**[redacted]████[/redacted]**
 **成立**。EFGH Research Institute 在[redacted]████[/redacted]注册成立，早期业务为军用药品研发与常规军械维护。首任董事会主席背景涉及[redacted]████[/redacted]与五角大楼采购办公室。
 
 **2024-2025**

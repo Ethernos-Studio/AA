@@ -2,7 +2,7 @@
   "id": "efgh",
   "title": "EFGH",
   "subtitle": "EFGH Research Institute / 军械·药品·生物研究复合体 —— 阿尔法战区的奠基者",
-  "archiveId": "AZ-ORG-005",
+  "archiveId": "AZ-ORG-004",
   "clearance": "L3",
   "lastUpdated": "2026-05-17",
   "tags": ["组织", "历史", "EFGH", "L3", "研究机构", "被收购"],
@@ -16,7 +16,7 @@
   "infobox": {
     "title": "Entity Profile",
     "fields": [
-      { "label": "编号", "value": "AZ-ORG-005" },
+      { "label": "编号", "auto": "archiveId" },
       { "label": "全称", "value": "EFGH Research Institute" },
       { "label": "曾用名", "value": "无界生科（2025-2027）" },
       { "label": "分类", "value": "军械 / 药品 / 生物研究复合体" },

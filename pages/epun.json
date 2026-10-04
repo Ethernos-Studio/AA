@@ -16,7 +16,7 @@
   "infobox": {
     "title": "Entity Profile",
     "fields": [
-      { "label": "编号", "value": "AZ-ORG-001" },
+      { "label": "编号", "auto": "archiveId" },
       { "label": "分类", "value": "超国家军事-政治联合体" },
       { "label": "状态", "value": "<span class='highlight'>活跃（封锁阶段）</span>" },
       { "label": "成立", "value": "2028年9月" },

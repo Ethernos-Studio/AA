@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://alpha-archive.invalid/schemas/sidebar.schema.json",
+  "title": "Alpha Archive sidebar",
+  "type": "object",
+  "required": ["sections"],
+  "properties": {
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "items"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "items": { "type": "array", "items": { "$ref": "#/$defs/item" } }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["type", "title"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["link", "action", "locked", "subheader", "meta", "category"] },
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "action": { "enum": ["random", "all", "recent"] },
+        "url": { "enum": ["?view=all", "?view=recent"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "enum": ["link", "category"] } } },
+          "then": { "required": ["id"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "action" } } },
+          "then": { "required": ["action"] }
+        }
+      ]
+    }
+  }
+}

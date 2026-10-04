@@ -1,0 +1,11 @@
+{
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "json.schemas": [
+    { "fileMatch": ["/wiki-config.json"], "url": "./schemas/config.schema.json" },
+    { "fileMatch": ["/wiki-sidebar.json"], "url": "./schemas/sidebar.schema.json" },
+    { "fileMatch": ["/pages/*.json"], "url": "./schemas/page.schema.json" }
+  ]
+}

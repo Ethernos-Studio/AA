@@ -10,7 +10,7 @@
 ## 历史时间线
 
 [timeline]
-**[redacted]████** [key]
+**[redacted]████[/redacted]** [key]
 **成立**。SR实验室作为五角大楼应对[code]"非传统威胁"[/code]的隐蔽科研臂成立，首任主任背景为[redacted]████[/redacted]。早期项目包括深空通信异常信号解析与未知合金样本分析。
 
 **2024-2027**

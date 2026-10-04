@@ -1,9 +1,11 @@
 {
   "sections": [
     {
-      "title": "Navigation",
+      "title": "导航",
       "items": [
         { "type": "link", "id": "index", "title": "主站首页" },
+        { "type": "action", "title": "全部条目", "action": "all", "url": "?view=all" },
+        { "type": "action", "title": "最近更新", "action": "recent", "url": "?view=recent" },
         { "type": "action", "title": "随机条目", "action": "random" }
       ]
     },
@@ -19,19 +21,24 @@
         { "type": "subheader", "title": "地点" },
         { "type": "link", "id": "alpha-zone", "title": "ALPHA ZONE" },
         { "type": "link", "id": "efgh-alpha", "title": "EFGH-ALPHA" },
-        { "type": "link", "id": "grassland-base", "title": "GRASSLAND BASE"},
-        { "type": "locked", "title": "SR-3基地" },
-        { "type": "locked", "title": "迪纳科山" },
-        { "type": "subheader", "title": "关键设定"},
-        { "type": "link", "id":"chronocrystalline", "title": "时晶体"}
+        { "type": "link", "id": "grassland-base", "title": "GRASSLAND BASE" },
+        { "type": "locked", "id": "sr-3", "title": "SR-3基地" },
+        { "type": "locked", "id": "dinako-mountain", "title": "迪纳科山" },
+        { "type": "subheader", "title": "线索" },
+        { "type": "link", "id": "adr-mk4", "title": "ADR-MK4" },
+        { "type": "subheader", "title": "关键设定" },
+        { "type": "link", "id": "chronocrystalline", "title": "时晶体" }
       ]
     },
     {
-      "title": "Metadata",
+      "title": "站点信息",
       "items": [
         { "type": "subheader", "title": "系统状态: 在线" },
         { "type": "subheader", "title": "最后更新：2026-08-19" },
-        { "type": "subheader", "title": "提示: 这是游戏《Alpha Zone》的Wiki页面，内容为虚拟架空世界观，与现实世界无关。"}
+        {
+          "type": "subheader",
+          "title": "提示: 这是游戏《Alpha Zone》的Wiki页面，内容为虚拟架空世界观，与现实世界无关。"
+        }
       ]
     }
   ]

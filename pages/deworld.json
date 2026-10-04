@@ -16,7 +16,7 @@
   "infobox": {
     "title": "Entity Profile",
     "fields": [
-      { "label": "编号", "value": "AZ-ORG-002" },
+      { "label": "编号", "auto": "archiveId" },
       { "label": "分类", "value": "反人类极端组织 / 跨国军事复合体" },
       { "label": "状态", "value": "<span class='highlight'>活跃（地下化）</span>" },
       { "label": "成立", "value": "<span class='redacted'>无任何资料可表明其成立时间</span>" },

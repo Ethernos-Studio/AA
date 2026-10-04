@@ -2,7 +2,7 @@
   "id": "wun",
   "title": "WUN",
   "subtitle": "United Nations Standing Army / 联合国常备军 —— EPUN的快速反应之刃",
-  "archiveId": "AZ-ORG-004",
+  "archiveId": "AZ-ORG-005",
   "clearance": "L3",
   "lastUpdated": "2026-05-17",
   "tags": ["组织", "军事", "WUN", "L3", "常备军", "封锁"],
@@ -16,7 +16,7 @@
   "infobox": {
     "title": "Entity Profile",
     "fields": [
-      { "label": "编号", "value": "AZ-ORG-004" },
+      { "label": "编号", "auto": "archiveId" },
       { "label": "全称", "value": "United Nations Standing Army" },
       { "label": "别名", "value": "联合国常备军 / 快速反应部队" },
       { "label": "分类", "value": "超国家联合武装力量" },

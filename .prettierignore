@@ -1,0 +1,9 @@
+node_modules/
+assets/vendor/
+dist/
+test-results/
+playwright-report/
+package-lock.json
+pages/
+*.md
+test-blockquote.html

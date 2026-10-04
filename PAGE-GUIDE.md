@@ -1,438 +1,47 @@
-# Page Markdown 文件设计指南
+# 页面编写指南
 
-## 1. 文件基础
+## 一页 = JSON 元数据 + Markdown 正文
 
-### 1.1 文件位置
-页面内容由两个文件组成：
-- **Markdown文件**: `pages/*.md` - 页面正文内容
-- **JSON配置文件**: `pages/*.json` - 页面元数据、分类、关联关系
+`wiki-config.json.pageRegistry` 注册 JSON，JSON 的 `contentFile` 指向 Markdown。**JSON 是元数据唯一真源**，新正文不写 YAML front matter，不重复页标题或自动生成的面包屑。
 
-```
-pages/
-├── epun.md
-├── epun.json
-├── deworld.md
-├── deworld.json
-├── alpha-zone.md
-├── alpha-zone.json
-├── wun.md
-└── wun.json
+推荐 ID/新文件名使用小写英文、数字和连字符，如 `new-entry`；ID 全站唯一。JSON 与 Markdown 文件 basename 必须一致，路径使用 `/` 且必须与磁盘大小写完全匹配。历史 `ADR-MK4.json/.md` 保持原名，ID 为 `adr-mk4`。不使用 URL、绝对路径、`..`、反斜杠、符号链接或嵌套目录。
+
+```sh
+node scripts/new-page.mjs new-entry --title "新条目" --category organizations
 ```
 
-### 1.2 文件命名规范
-- 使用小写字母
-- 单词间用连字符 `-` 连接
-- 避免特殊字符和空格
-- Markdown与JSON文件名必须一致
+脚手架使用现实当天日期，创建两个文件并追加注册表，不覆盖已有内容。`archiveId` 与分类祖先链由脚本派生：`--category organizations` 会同时写入 `entities` 与 `organizations`（后者是前者的子分类），编号取该分类 `archivePrefix` 下的下一个空号，因此不需要也不应手填编号。不自动加入侧栏；按需要在 `wiki-sidebar.json` 手工添加 link。将已声明的 planned 条目转为正式页面时，先从 `plannedPages` 移出该 ID，再运行脚手架。
 
-| 正确 | 错误 |
-|------|------|
-| `alpha-zone.md` | `Alpha Zone.md` |
-| `sr-lab.md` | `SR_Lab.md` |
-| `deworld.md` | `DeWorld!!.md` |
+## 元数据模板
 
-### 1.3 编码要求
-- 文件编码: UTF-8
-- 换行符: LF 或 CRLF
-- 缩进: 2个空格（用于嵌套内容）
-
----
-
-## 2. JSON配置文件结构
-
-### 2.1 完整模板
 ```json
 {
-  "id": "page-id",
-  "title": "页面标题",
-  "subtitle": "副标题描述",
-  "archiveId": "档案编号",
+  "id": "new-entry",
+  "title": "新条目",
+  "subtitle": "简短副标题",
+  "archiveId": "AZ-ORG-NEW",
   "clearance": "L3",
-  "lastUpdated": "2031-09-24",
-  "tags": ["标签1", "标签2"],
-  "contentFile": "pages/page-id.md",
+  "lastUpdated": "2026-10-04",
+  "tags": ["组织"],
+  "contentFile": "pages/new-entry.md",
+  "categories": ["entities", "organizations"],
   "banner": {
     "level": "L3",
-    "text": "保密提示文本",
-    "meta": "系列编号",
-    "color": "amber"
-  },
-  "infobox": {
-    "title": "信息框标题",
-    "fields": [
-      { "label": "字段名", "value": "字段值" }
-    ]
-  },
-  "categories": ["父分类", "子分类"],
-  "relations": {
-    "parent": "上级页面id",
-    "subordinates": ["下属页面id1", "下属页面id2"],
-    "associates": [
-      { "id": "关联页面id", "type": "关系类型", "description": "描述" }
-    ]
-  },
-  "autoGenerate": {
-    "breadcrumb": true,
-    "categoryNav": true,
-    "relatedPages": true
-  },
-  "metadata": {
-    "author": "作者",
-    "reviewer": "审核员",
-    "version": "1.0.0"
-  }
-}
-```
-
-### 2.2 字段详解
-
-#### 基础信息
-| 字段 | 类型 | 必需 | 说明 |
-|------|------|------|------|
-| `id` | string | 是 | 唯一标识，与文件名一致 |
-| `title` | string | 是 | 页面主标题 |
-| `subtitle` | string | 否 | 副标题描述 |
-| `archiveId` | string | 否 | 档案编号如 AZ-ORG-001 |
-| `clearance` | string | 否 | 保密等级 L1/L2/L3/L4 |
-| `lastUpdated` | string | 否 | 最后更新日期 YYYY-MM-DD |
-| `tags` | array | 否 | 标签数组 |
-| `contentFile` | string | 是 | 对应Markdown文件路径 |
-
-#### Banner配置
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `level` | string | 显示等级如 L3 |
-| `text` | string | 提示文本，支持换行符 `\n` |
-| `meta` | string | 元信息如系列编号 |
-| `color` | string | 颜色: amber/red/blue/green |
-
-#### Infobox配置
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `title` | string | 信息框标题如 Entity Profile |
-| `fields` | array | 字段数组，每个含 `label` 和 `value` |
-
-**value支持HTML标签：**
-- `<span class='highlight'>高亮</span>`
-- `<span class='redacted'>████</span>`
-- `<span class='censored'>[审查]</span>`
-- `<span class='redacted-text'>警告</span>`
-
-#### 分类系统 (categories)
-定义页面在分类树中的位置，从根到叶排列：
-```json
-"categories": ["entities", "organizations"]
-```
-表示: 单体 > 组织
-
-#### 关联关系 (relations)
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `parent` | string/null | 上级页面id |
-| `subordinates` | array | 下属页面id数组 |
-| `associates` | array | 关联对象数组 |
-
-**associates对象结构：**
-```json
-{
-  "id": "关联页面id",
-  "type": "关系类型如敌对/隶属/管辖",
-  "description": "关系描述"
-}
-```
-
-#### 自动生成开关 (autoGenerate)
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `breadcrumb` | boolean | 自动生成面包屑导航 |
-| `categoryNav` | boolean | 自动生成分类导航盒 |
-| `relatedPages` | boolean | 自动生成相关条目盒 |
-
----
-
-## 3. JSON配置示例
-
-### EPUN完整示例
-```json
-{
-  "id": "epun",
-  "title": "EPUN",
-  "subtitle": "Earth United Nations / 地球联合国 — 超国家封锁联合体",
-  "archiveId": "AZ-ORG-001",
-  "clearance": "L3",
-  "lastUpdated": "2031-09-24",
-  "tags": ["组织", "军事", "封锁", "L3"],
-  "contentFile": "pages/epun.md",
-  "banner": {
-    "level": "L3",
-    "text": "该文档需 L3 及以上保密权限访问。\n未经授权的扩散将触发[追踪协议]。",
-    "meta": "EPUN-WAR-ARCH\nSERIES AZ-ORG",
+    "text": "虚构档案提示，不构成访问控制。",
+    "meta": "ARCHIVE",
     "color": "amber"
   },
   "infobox": {
     "title": "Entity Profile",
     "fields": [
-      { "label": "编号", "value": "AZ-ORG-001" },
-      { "label": "分类", "value": "超国家军事-政治联合体" },
-      { "label": "状态", "value": "<span class='highlight'>活跃（封锁阶段）</span>" },
-      { "label": "成立", "value": "2028年9月" },
-      { "label": "成员国", "value": "20 <span class='censored'>[完整列表需L4权限]</span>" },
-      { "label": "总部", "value": "<span class='redacted'>███████</span>" },
-      { "label": "关联机构", "value": "WUN, EPUN医疗纵队, 战档司" },
-      { "label": "敌对", "value": "DeWorld（净化者/毁灭派）" }
+      { "label": "编号", "auto": "archiveId" },
+      { "label": "状态", "value": "活动" }
     ]
   },
-  "categories": ["entities", "organizations"],
-  "relations": {
-    "parent": null,
-    "subordinates": ["wun"],
-    "associates": [
-      { "id": "deworld", "type": "敌对", "description": "主要敌对组织" },
-      { "id": "alpha-zone", "type": "管辖", "description": "封锁区域" }
-    ]
-  },
-  "autoGenerate": {
-    "breadcrumb": true,
-    "categoryNav": true,
-    "relatedPages": true
-  },
-  "metadata": {
-    "author": "EPUN战档司",
-    "reviewer": "L3审核员",
-    "version": "2.1.0"
-  }
-}
-```
-
----
-
-## 4. Markdown文件结构
-
-### 4.1 基础模板
-```markdown
-[section]
-## 概述
-
-页面简介段落...
-[/section]
-
-[section]
-## 主要章节
-
-### 子章节
-
-内容...
-[/section]
-```
-
-**注意**: Markdown文件不再包含YAML头，所有元数据移至JSON文件。
-
-### 4.2 与JSON的关联
-Wiki引擎通过 `contentFile` 字段关联Markdown：
-1. 从 `wiki-config.json` 的 `pageRegistry` 找到页面JSON
-2. 从JSON的 `contentFile` 加载Markdown内容
-3. 合并渲染：JSON提供元数据，Markdown提供正文
-
----
-
-## 5. Markdown标签语法
-
-### 5.1 文本样式标签
-
-| 标签 | 效果 | 使用场景 |
-|------|------|----------|
-| `[redacted]文本[/redacted]` | 黑色遮盖块 | 机密信息 |
-| `[redacted-text]文本[/redacted-text]` | 红色警告 | 危险警告 |
-| `[censored]文本[/censored]` | 灰色斜体 | 审查内容 |
-| `[highlight]文本[/highlight]` | 琥珀色高亮 | 重点强调 |
-| `[code]文本[/code]` | 代码样式 | 术语/代码 |
-
-**示例：**
-```markdown
-EPUN总部位于[redacted]███████[/redacted]。
-警告：[redacted-text]开火优先于说话[/redacted-text]
-涉及[censored]伪史档案[/censored]的编纂。
-决策逻辑：[highlight]收复成本高于土地价值[/highlight]
-使用[code]超国家军事指挥权[/code]直接调动。
-```
-
-### 5.2 警告框
-```markdown
-[warning]
-警告标题
-警告内容，支持多行...
-[/warning]
-```
-
-### 5.3 可折叠区块
-```markdown
-[collapsible title="区块标题"]
-折叠内容...
-
-支持多行和**粗体**等格式
-[/collapsible]
-```
-
-### 5.4 时间线
-```markdown
-[timeline]
-**日期或时间段**
-事件描述...
-
-**日期** [key]
-重要事件描述...
-[/timeline]
-```
-
-- `[key]` - 标记为关键事件（红色节点）
-- 日期用 `**` 包裹
-- 事件间用空行分隔
-
----
-
-## 6. 内容区块
-
-### 6.1 区块语法
-```markdown
-[section]
-## 区块标题
-
-区块内容...
-[/section]
-```
-
-### 6.2 标题层级
-
-| Markdown | HTML | 用途 |
-|----------|------|------|
-| `##` | `<h2>` | 主要章节 |
-| `###` | `<h3>` | 子章节 |
-| `####` | `<h4>` | 小节（不建议使用） |
-
----
-
-## 7. 完整示例
-
-### epun.json
-```json
-{
-  "id": "epun",
-  "title": "EPUN",
-  "subtitle": "Earth United Nations / 地球联合国",
-  "archiveId": "AZ-ORG-001",
-  "clearance": "L3",
-  "lastUpdated": "2031-09-24",
-  "tags": ["组织", "军事", "L3"],
-  "contentFile": "pages/epun.md",
-  "banner": {
-    "level": "L3",
-    "text": "该文档需 L3 及以上保密权限访问。",
-    "meta": "EPUN-WAR-ARCH",
-    "color": "amber"
-  },
-  "infobox": {
-    "title": "Entity Profile",
-    "fields": [
-      { "label": "编号", "value": "AZ-ORG-001" },
-      { "label": "状态", "value": "<span class='highlight'>活跃</span>" }
-    ]
-  },
-  "categories": ["entities", "organizations"],
-  "relations": {
-    "parent": null,
-    "subordinates": ["wun"],
-    "associates": [
-      { "id": "deworld", "type": "敌对", "description": "主要敌对组织" }
-    ]
-  },
-  "autoGenerate": {
-    "breadcrumb": true,
-    "categoryNav": true,
-    "relatedPages": true
-  },
-  "metadata": {
-    "author": "EPUN战档司",
-    "version": "2.1.0"
-  }
-}
-```
-
-### epun.md
-```markdown
-[section]
-## 概述
-
-**EPUN（地球联合国）**是2028年迪纳科山氢弹事件后，由20个主权国家组成的临时联合决策机构。
-
-与常规国际组织的协商性质不同，EPUN在成立之初即被赋予[code]超国家军事指挥权[/code]。
-[/section]
-
-[section]
-## 历史时间线
-
-[timeline]
-**2028-09-30** [key]
-**雪杉行动**。EPUN联合20国发动首次大规模地面反攻...
-
-**2028-12-01** [key]
-**冻结与转向**。EPUN正式冻结地面进攻...
-[/timeline]
-[/section]
-
-[section]
-## 组织结构
-
-### 战档司
-
-EPUN的情报与档案中枢...
-
-### WUN 联合部队
-
-联合国常备军/快速反应部队...
-[/section]
-
-[section]
-## 关键协议
-
-[warning]
-警告
-以下内容涉及敏感军事协议。
-[/warning]
-
-[collapsible title="无救援协议"]
-**生效日期**: 2029年6月
-
-1. 任何未经批准的进入视为自动放弃保护
-2. 医疗纵队仅在封锁线外执行检疫
-[/collapsible]
-[/section]
-```
-
----
-
-## 8. 快速参考卡
-
-### JSON配置
-```json
-{
-  "id": "page-id",
-  "title": "标题",
-  "subtitle": "副标题",
-  "archiveId": "编号",
-  "clearance": "L3",
-  "lastUpdated": "2031-09-24",
-  "tags": ["标签1", "标签2"],
-  "contentFile": "pages/page-id.md",
-  "banner": { "level": "L3", "text": "提示", "meta": "系列", "color": "amber" },
-  "infobox": {
-    "title": "Profile",
-    "fields": [{ "label": "字段", "value": "值" }]
-  },
-  "categories": ["父分类", "子分类"],
   "relations": {
     "parent": null,
     "subordinates": [],
-    "associates": [{ "id": "关联id", "type": "关系", "description": "描述" }]
+    "associates": [{ "id": "epun", "type": "关联", "description": "关系说明" }]
   },
   "autoGenerate": {
     "breadcrumb": true,
@@ -443,29 +52,117 @@ EPUN的情报与档案中枢...
 }
 ```
 
-### Markdown内容
+必需字段：`id`、`title`、`contentFile`。其余字段可按需提供；不要用错误类型或 `null` 替代省略。`lastUpdated` 若提供须为真实有效的 `YYYY-MM-DD` **现实编辑日期**，不是世界观时间；故事日期写在正文或信息框中。最近更新按此字段排序。`archiveId` 是故事档案编号，不等于路由 ID；格式为 `AZ-<前缀>-###`，前缀由页面最具体的分类在 `wiki-config.json` 的 `archivePrefix` 声明，校验器据此检查格式并拒绝重复编号。
+
+`banner.color` 仅 `amber`、`red`、`blue`、`green`。信息框每个字段给 `value`（字符串，可用有限内联 HTML，例如 `<span class="highlight">活动</span>`）**或** `auto`（当前支持 `"archiveId"`，渲染时读取页面自身的编号）。二者只能取其一；同一个编号不要在 `archiveId` 和「编号」行各写一遍。仍需 DOMPurify 净化，不能放脚本/事件属性。正文中的涂黑与分级仅为剧情效果，部署后原文公开可读。
+
+编辑器提示来自 `schemas/*.schema.json` 和 `.vscode/settings.json`。跨文件关系、大小写、真实日期、自定义配对等以 `npm run validate` 为准。
+
+## 注册、分类与关系
+
+在 `wiki-config.json` 注册：
+
+```json
+{ "id": "new-entry", "file": "pages/new-entry.json" }
+```
+
+`defaultPage` 必须存在于注册表。`all` 和 `recent` 是视图而非伪页面，不创建 `pages/recent.json`。
+
+页面 `categories` 是成员集合，所有值必须已在配置分类树中定义；不要在分类对象重复维护成员 `pages`。分类 `parent`/`subcategories` 应双向一致且无环。
+
+`relations.parent`、`subordinates`、`associates[].id` 指向已有页面，或在配置显式声明的计划条目：
+
+```json
+"plannedPages": {
+  "future-entry": { "id": "future-entry", "title": "待编写条目" }
+}
+```
+
+必须是对象而非字符串数组；key 与内部 id 相同。计划条目不能同时在注册表中，不能当作正式条目的可点击导航目标。不要为了消除未知关系错误偷偷生成空白页面，也不要删除剧情关系。
+
+关系只需声明一次，反向链接由页面数据自动推导：`deworld` 的「被引用」会列出所有指向它的档案，即使那些页面才写了这层关系。因此**两侧各写一遍是多余的**——`wun.parent = epun` 与 `epun.subordinates ∋ wun` 是同一件事，保留一处即可。
+
+`parent` 是父级的权威写法：已注册页面把父级写在**子页**的 `relations.parent`，父页不必再在 `subordinates` 里重复。`subordinates` 保留给**计划条目**——它们没有 JSON 文件，无法自行声明父级。`npm run graph` 会列出可以删除的重复声明，以及被多个页面同时声明为下属的条目（这类冲突只警告，不阻断构建，因为"位于该区域内"与"由该组织管辖"在本设定中是两回事）。
+
+侧栏常用项：
+
+```json
+{ "type": "link", "id": "new-entry", "title": "新条目" }
+{ "type": "action", "action": "all", "url": "?view=all", "title": "全部条目" }
+{ "type": "action", "action": "recent", "url": "?view=recent", "title": "最近更新" }
+{ "type": "locked", "title": "未开放档案" }
+```
+
+上面每行为独立对象示例，应放入相应 section 的 `items` 数组。
+
+## 普通 Markdown 优先
+
+不需要把每段都包进自定义标签。标准标题、粗体、斜体、引用、列表、链接、表格、围栏代码均由 marked 处理：
+
+````markdown
+## 概述
+
+普通段落与 **重点**。
+
+> 档案引用
+
+- 第一项
+- 第二项
+
+[EPUN](?page=epun)
+[全部条目](?view=all)
+[组织分类](?category=organizations)
+
+```text
+这里的 [section] 只是代码，不会变成区块。
+```
+````
+
+旧 `?page=…` 链接继续支持；`?view=all/recent` 和 `?category=…` 用于聚合视图。页内可用 `#标题锚点`；重复标题会生成不同 ID。文件资源链接应使用部署相对路径，避免写死根路径 `/assets/...`，否则仓库子路径部署可能失效。
+
+## 档案扩展
+
+| 语法 | 用途 |
+| --- | --- |
+| `[redacted]文本[/redacted]` | 涂黑 |
+| `[redacted-text]文本[/redacted-text]` | 警告样式 |
+| `[censored]文本[/censored]` | 审查标记 |
+| `[highlight]文本[/highlight]` | 高亮 |
+| `[code]术语[/code]` | 行内代码样式 |
+
+块级标签独占一行，可嵌套并须正确配对：
+
 ```markdown
 [section]
-## 章节标题
-
-[redacted]隐藏[/redacted]
-[redacted-text]警告[/redacted-text]
-[censored]审查[/censored]
-[highlight]重点[/highlight]
-[code]术语[/code]
+## 行动记录
 
 [warning]
-标题
-内容
+警告标题
+警告内容。
 [/warning]
 
-[collapsible title="标题"]
-内容
+[collapsible title="补充记录"]
+支持 **Markdown** 的折叠正文。
 [/collapsible]
 
 [timeline]
-**日期** [key]
-事件
+**2028-09-30** [key]
+故事事件，不是 lastUpdated。
+
+**2031-09-24**
+后续事件。
 [/timeline]
 [/section]
 ```
+
+`[key]` 是时间线关键事件单标记，没有 `[/key]`。`[breadcrumb]…[/breadcrumb]` 仅用于兼容旧内容；新页优先使用 `autoGenerate.breadcrumb`。解析器兼容旧 front matter，但不把它覆盖到 JSON 元数据上。不支持的标签保留为内容，`navbox/categorybox` 不属于扩展契约。
+
+围栏代码、行内反引号代码中的标签不处理；`\[section]` 等转义用于原样显示。不要交叉嵌套，不要遗漏闭合标签。渲染先解析 Markdown/扩展，再在 DOM 注入时净化 HTML，内容不能作为脚本执行。
+
+## 检查清单
+
+- `npm run validate` 没有错误；明确阅读 warnings。
+- `npm run graph` 查看全站关系图：单向声明、可删的重复声明、父级冲突与编号序列。
+- 使用 `npm run dev` 通过 HTTP 预览条目、分类/关系、窄屏导航。
+- 更改正文时同步调整现实 `lastUpdated`。
+- 不更改故事事实来通过工具检查；已解决的编号冲突见 [Known issues](CONTRIBUTING.md#known-issues)。

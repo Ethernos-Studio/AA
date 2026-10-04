@@ -2,7 +2,7 @@
   "id": "grassland-base",
   "title": "GRASSLAND BASE",
   "subtitle": "草原基地 —— DeWorld最早的出发点",
-  "archiveId": "AZ-LOC-002",
+  "archiveId": "AZ-LOC-003",
   "clearance": "L3",
   "lastUpdated": "2026-08-19",
   "tags": ["地点", "草原基地", "GRASSLAND BASE", "L3"],
@@ -16,7 +16,7 @@
   "infobox": {
     "title": "Territory Profile",
     "fields": [
-      { "label": "编号", "value": "AZ-LOC-002" },
+      { "label": "编号", "auto": "archiveId" },
       { "label": "别名", "value": "草原基地 / GRASSLAND BASE" },
       { "label": "状态", "value": "<span class='highlight'>活动</span>" },
       { "label": "形成日期", "value": "2028年5月" },
@@ -25,7 +25,7 @@
   },
   "categories": ["entities", "locations"],
   "relations": {
-    "parent": "EFGH",
+    "parent": "efgh",
     "subordinates": [],
     "associates": [
       { "id": "deworld", "type": "名义上属", "description": "战区的缔造者，现已转入地下" },

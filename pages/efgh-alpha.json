@@ -16,7 +16,7 @@
   "infobox": {
     "title": "Territory Profile",
     "fields": [
-      { "label": "编号", "value": "AZ-LOC-002" },
+      { "label": "编号", "auto": "archiveId" },
       { "label": "原属", "value": "EFGH研究机构" },
       { "label": "现属", "value": "<span class='highlight'>DeWorld（失控）</span>" },
       { "label": "分类", "value": "PvE生存 / 动态威胁" },

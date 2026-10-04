@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://alpha-archive.invalid/schemas/page.schema.json",
+  "title": "Alpha Archive page metadata",
+  "type": "object",
+  "required": ["id", "title", "contentFile"],
+  "properties": {
+    "id": { "$ref": "#/$defs/id" },
+    "title": { "$ref": "#/$defs/text" },
+    "subtitle": { "$ref": "#/$defs/text" },
+    "archiveId": { "$ref": "#/$defs/text" },
+    "clearance": { "$ref": "#/$defs/text" },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "Real-world editorial update date, not an in-universe date."
+    },
+    "tags": { "$ref": "#/$defs/strings" },
+    "contentFile": { "type": "string", "pattern": "^pages/[A-Za-z0-9][A-Za-z0-9-]*\\.md$" },
+    "categories": { "$ref": "#/$defs/ids" },
+    "banner": {
+      "type": "object",
+      "properties": {
+        "level": { "$ref": "#/$defs/text" },
+        "text": { "$ref": "#/$defs/text" },
+        "meta": { "$ref": "#/$defs/text" },
+        "color": { "enum": ["amber", "red", "blue", "green"] }
+      }
+    },
+    "infobox": {
+      "type": "object",
+      "required": ["title", "fields"],
+      "properties": {
+        "title": { "$ref": "#/$defs/text" },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label"],
+            "description": "Give a literal `value`, or `auto: \"archiveId\"` to derive it from the page record so it cannot drift.",
+            "oneOf": [
+              { "required": ["value"], "not": { "required": ["auto"] } },
+              { "required": ["auto"], "not": { "required": ["value"] } }
+            ],
+            "properties": {
+              "label": { "$ref": "#/$defs/text" },
+              "value": { "type": "string" },
+              "auto": { "enum": ["archiveId"] }
+            }
+          }
+        }
+      }
+    },
+    "relations": {
+      "type": "object",
+      "properties": {
+        "parent": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "subordinates": { "$ref": "#/$defs/ids" },
+        "associates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "type": { "$ref": "#/$defs/text" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "autoGenerate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "breadcrumb": { "type": "boolean" },
+        "categoryNav": { "type": "boolean" },
+        "relatedPages": { "type": "boolean" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "author": { "$ref": "#/$defs/text" },
+        "reviewer": { "$ref": "#/$defs/text" },
+        "version": { "$ref": "#/$defs/text" }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "text": { "type": "string", "minLength": 1 },
+    "strings": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/text" } },
+    "ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }
+  }
+}

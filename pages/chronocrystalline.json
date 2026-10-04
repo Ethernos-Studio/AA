@@ -16,7 +16,7 @@
   "infobox": {
     "title": "Material Profile",
     "fields": [
-      { "label": "编号", "value": "AZ-MAT-001" },
+      { "label": "编号", "auto": "archiveId" },
       { "label": "分类", "value": "异常时空矿物 / 人造-天然复合晶体" },
       { "label": "状态", "value": "<span class='highlight'>EPUN一级管制物资</span>" },
       { "label": "首次发现", "value": "2028年 · 阿拉斯加迪纳科山" },

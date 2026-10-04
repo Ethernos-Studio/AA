@@ -16,7 +16,7 @@
   "infobox": {
     "title": "Entity Profile",
     "fields": [
-      { "label": "编号", "value": "AZ-ORG-003" },
+      { "label": "编号", "auto": "archiveId" },
       { "label": "全称", "value": "Special Research Laboratory" },
       { "label": "分类", "value": "军事科研外包复合体 / 黑科节点" },
       { "label": "状态", "value": "<span class='highlight'>部分活跃（SR-3已覆灭）</span>" },

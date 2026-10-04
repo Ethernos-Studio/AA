@@ -1,354 +1,76 @@
-# Alpha Archive Wiki 设计文档
-
-## 1. 概述
-
-### 1.1 项目目标
-构建一个基于静态文件的Wiki系统，支持Markdown内容编写和JSON配置驱动，采用深色科幻档案风格UI。
-
-### 1.2 核心特性
-- 零后端依赖，纯前端渲染
-- Markdown + JSON 双文件驱动
-- 模块化组件设计
-- 响应式布局支持
-
----
-
-## 2. 架构设计
-
-### 2.1 文件结构
-
-```
-E:\spj\EWD\
-├── wiki-engine.html      # 核心引擎 (HTML+CSS+JS)
-├── wiki-config.json      # 站点配置
-├── wiki-sidebar.json     # 侧边栏配置
-├── WIKI-DESIGN.md        # 设计文档
-├── rollback-wiki.ps1     # 回滚脚本
-└── pages\                # Markdown内容目录
-    ├── epun.md
-    ├── deworld.md
-    ├── alpha-zone.md
-    └── wun.md
-```
-
-### 2.2 数据流
-
-```
-用户请求
-    ↓
-wiki-engine.html 加载
-    ↓
-并行加载 wiki-config.json + wiki-sidebar.json + 页面元数据(pages/*.json)
-    ↓
-按需加载当前页面的 pages/*.md（其余页面首次访问时再加载）
-    ↓
-解析Markdown → 渲染HTML
-    ↓
-注入DOM + 绑定事件
-```
-
-### 2.3 模块划分
-
-| 模块 | 职责 | 复杂度 |
-|------|------|--------|
-| ConfigLoader | 加载/验证JSON配置 | O(1) |
-| MarkdownParser | 解析自定义MD语法 | O(n) |
-| ComponentRenderer | 渲染UI组件 | O(n) |
-| NavigationManager | 处理页面导航 | O(1) |
-| SearchEngine | 全文搜索 | O(n) |
-
----
-
-## 3. 配置规范
-
-### 3.1 wiki-config.json
-
-```typescript
-interface WikiConfig {
-  siteName: string;           // 站点名称
-  domain: string;             // 域名显示
-  defaultPage: string;        // 默认页面ID
-  footer: string;             // 页脚文本
-  pages: PageConfig[];        // 页面列表
-}
-
-interface PageConfig {
-  id: string;                 // 唯一标识
-  title: string;              // 页面标题
-  subtitle: string;           // 副标题
-  archiveId: string;          // 归档编号
-  clearance: string;          // 保密等级
-  lastUpdated: string;        // 更新日期
-  tags: string[];             // 标签列表
-  banner: BannerConfig;       // 横幅配置
-  infobox: InfoboxConfig;     // 信息框配置
-}
-
-interface BannerConfig {
-  level: string;              // 等级标识
-  text: string;               // 显示文本
-  meta: string;               // 元信息
-  color: "amber" | "red" | "blue" | "green";
-}
-
-interface InfoboxConfig {
-  title: string;
-  fields: Array<{
-    label: string;
-    value: string;            // 支持HTML
-  }>;
-}
-```
-
-### 3.2 wiki-sidebar.json
-
-```typescript
-interface SidebarConfig {
-  sections: NavSection[];
-}
-
-interface NavSection {
-  title: string;
-  items: NavItem[];
-}
-
-type NavItem =
-  | { type: "link"; id: string; title: string }
-  | { type: "locked"; title: string }
-  | { type: "subheader"; title: string }
-  | { type: "meta"; title: string }
-  | { type: "action"; title: string; action: string };
-```
-
----
-
-## 4. Markdown语法规范
-
-### 4.1 标准语法支持
-
-| 语法 | 输出 | 示例 |
-|------|------|------|
-| `## 标题` | `<h2>` | 章节标题 |
-| `### 子标题` | `<h3>` | 小节标题 |
-| `**粗体**` | `<strong>` | **粗体** |
-| `\n\n` | `<p>` | 段落分隔 |
-
-### 4.2 自定义标签
-
-#### 4.2.1 面包屑导航
-```markdown
-[breadcrumb]
-[单体](epun) > [组织](epun) > EPUN
-[/breadcrumb]
-```
-
-#### 4.2.2 内容区块
-```markdown
-[section]
-## 标题
-内容...
-[/section]
-```
-
-#### 4.2.3 特殊文本样式
-```markdown
-[redacted]隐藏文本[/redacted]          → 黑色块遮盖
-[redacted-text]警告文本[/redacted-text] → 红色高亮
-[censored]审查内容[/censored]          → 灰色斜体
-[highlight]重点内容[/highlight]        → 琥珀色高亮
-[code]代码术语[/code]                  → 等宽字体+背景
-```
-
-#### 4.2.4 警告框
-```markdown
-[warning]
-警告标题
-警告内容...
-[/warning]
-```
-
-#### 4.2.5 可折叠区块
-```markdown
-[collapsible title="标题"]
-折叠内容...
-[/collapsible]
-```
-
-#### 4.2.6 时间线
-```markdown
-[timeline]
-**日期** [key]
-事件描述...
-
-**日期**
-另一事件...
-[/timeline]
-```
-- `[key]` 标记重要事件（红色节点）
-
----
-
-## 5. 组件设计
-
-### 5.1 布局组件
-
-#### 5.1.1 页面结构
-```
-┌─────────────────────────────────────┐
-│ Header (固定48px)                    │
-├──────────┬──────────────────────────┤
-│          │                          │
-│ Sidebar  │    Main Content          │
-│ (220px)  │    (自适应)               │
-│ 固定      │                          │
-│          │                          │
-├──────────┴──────────────────────────┤
-│ Quick Nav (固定底部)                  │
-└─────────────────────────────────────┘
-```
-
-#### 5.1.2 响应式断点
-| 断点 | 行为 |
-|------|------|
-| < 768px | Sidebar隐藏，QuickNav简化 |
-| ≥ 768px | 完整布局 |
-
-### 5.2 UI组件
-
-#### 5.2.1 分级横幅 (ClassBanner)
-- 四种颜色主题: amber/red/blue/green
-- 左侧等级图标
-- 右侧元信息
-
-#### 5.2.2 信息框 (Infobox)
-- 浮动右侧 (280px)
-- 键值对列表
-- 支持内联HTML
-
-#### 5.2.3 时间线 (Timeline)
-- 左侧垂直线
-- 节点标记普通/关键事件
-- 日期 + 描述结构
-
-#### 5.2.4 快速导航 (QuickNav)
-- 上一页/下一页按钮
-- 页面计数器
-- 搜索框
-- 随机条目按钮
-
----
-
-## 6. 状态管理
-
-### 6.1 全局状态
-```javascript
-const state = {
-  config: null,           // 站点配置
-  pages: Map<id, page>,   // 页面缓存
-  currentPageId: null,    // 当前页面
-  history: [],            // 浏览历史
-  historyIndex: -1,       // 历史指针
-  sidebarData: null       // 侧边栏数据
-};
-```
-
-### 6.2 导航逻辑
-- **loadPage**: 加载指定页面，更新历史
-- **prevPage**: 历史后退
-- **nextPage**: 历史前进或下一页
-- **randomPage**: 随机跳转
-
-### 6.3 缓存策略
-- 启动时仅并行加载页面元数据（JSON），Markdown 内容按需懒加载
-- 使用Map存储，O(1)查询；内容加载一次后驻留内存
-
----
-
-## 7. 性能优化
-
-### 7.1 加载优化
-- 并行加载配置文件与页面元数据
-- Markdown 内容懒加载（首次访问时按需获取）
-- 加载动画提升感知性能
-
-### 7.2 渲染优化
-- 虚拟滚动（未实现，内容量小）
-- 防抖搜索 (200ms)
-- 事件委托
-
-### 7.3 资源优化
-- 内联CSS/JS（单文件部署）
-- SVG噪声纹理（Data URI）
-- 无外部依赖
-
----
-
-## 8. 扩展指南
-
-### 8.1 添加新页面
-
-1. 创建 `pages/new-page.md`
-2. 在 `wiki-config.json` 的 `pages` 数组添加配置
-3. 在 `wiki-sidebar.json` 添加导航项
-
-### 8.2 添加自定义标签
-
-1. 在 `parseMarkdown` 函数添加正则匹配
-2. 实现对应的HTML生成逻辑
-3. 更新本文档第4节
-
-### 8.3 修改主题色
-
-编辑 `wiki-engine.html` 的 `:root` 变量：
-```css
-:root {
-  --bg: #08080c;
-  --accent-amber: #d4a017;
-  --accent-red: #c0392b;
-  /* ... */
-}
-```
-
----
-
-## 9. 安全考虑
-
-### 9.1 XSS防护
-- `escapeHtml` 函数转义所有动态内容
-- Markdown解析器过滤危险标签
-- 配置文件中HTML需手动审核
-
-### 9.2 数据完整性
-- JSON解析失败时显示错误页面
-- 页面不存在时优雅降级
-- 回滚脚本提供快速清理
-
----
-
-## 10. 浏览器兼容
-
-| 浏览器 | 支持状态 |
-|--------|----------|
-| Chrome 90+ | 完全支持 |
-| Firefox 88+ | 完全支持 |
-| Edge 90+ | 完全支持 |
-| Safari 14+ | 基本支持 |
-
----
-
-## 附录A: 文件清单
-
-| 文件 | 大小 | 用途 |
-|------|------|------|
-| wiki-engine.html | ~25KB | 核心引擎 |
-| wiki-config.json | ~3KB | 站点配置 |
-| wiki-sidebar.json | ~1KB | 导航配置 |
-| pages/*.md | ~2KB each | 内容文件 |
-
----
-
-## 附录B: 更新日志
-
-| 日期 | 版本 | 变更 |
-|------|------|------|
-| 2026-05-16 | 1.0.0 | 初始版本 |
+# Alpha Archive 设计说明
+
+## 目标与边界
+
+这是公开的静态 Wiki，不是访问控制系统。档案等级、涂黑和锁定条目属于架空剧情及 UI 状态，不能保护原文。运行站点只需要 HTTP 静态托管；Node.js 22.13+ 的 22.x 用于本地工具与测试，不是服务端业务依赖。
+
+没有 SPA 框架或生产 JS 打包步骤；HTML、CSS、原生 ESM、JSON、Markdown 与锁定的浏览器 vendor 资源直接部署。新功能优先保持轻量模块边界，不在单个 `index.html` 中重新聚合所有逻辑。
+
+## 文件与职责
+
+| 文件/模块 | 职责 |
+| --- | --- |
+| `index.html` | 语义结构、静态 UI 容器、ESM 入口 |
+| `assets/styles.css` | 档案主题、布局、窄屏、状态样式 |
+| `assets/js/app.js` | 启动协调、事件绑定与页面状态 |
+| `assets/js/router.js` | URL 解析、页面/视图/分类导航和浏览器历史 |
+| `assets/js/render.js` | 页面/聚合视图 DOM、净化边界和组件渲染 |
+| `assets/js/content-store.js` | 配置、元数据、正文懒加载与缓存 |
+| `assets/js/search.js` | 搜索匹配与结果模型 |
+| `assets/js/markdown.js` | marked 上的档案扩展、标题锚点和目录数据 |
+| `assets/js/graph.js` | 关系图推导：反向链接、编号前缀、无 DOM 依赖的冲突检测，浏览器与 Node 共用 |
+| `assets/vendor/` | 本地锁定 marked/DOMPurify 及许可证 |
+| `wiki-config.json` | 注册表、默认页、分类树、显式计划条目 |
+| `wiki-sidebar.json` | 人工策划的导航与剧情锁定项 |
+| `pages/*.json` | 真实元数据源 |
+| `pages/*.md` | 正文 |
+| `scripts/` | Node 标准库预览、校验、构建、脚手架；vendor 同步/检查 |
+| `schemas/` | 编辑器 JSON Schema；不替代跨文件校验 |
+| `tests/` | 导入实际模块的单元测试和浏览器回归 |
+
+## 数据与路由
+
+启动读取配置、侧栏与注册页 JSON，正文只在访问或需要搜索时按需加载。内容存储复用缓存与正在进行的请求，路由负责当前意图，不能让较慢的旧请求覆盖后来导航。
+
+- `?page=epun` 延续旧页面 URL。
+- `?view=all` 汇总正式注册条目；`?view=recent` 按现实编辑字段 `lastUpdated` 组织。
+- `?category=organizations` 根据页面 JSON `categories` 计算成员，不重复维护另一份分类成员列表。
+- 没有匹配的路由/资源应给出明确状态，不无限显示加载画面或静默转为错误页面内容。
+- 查询路由与相对资源 URL 支持根路径和 `/preview/` 等仓库子路径部署。
+
+`plannedPages` 严格为 `{ "id": { "id": "id", "title": "显示名" } }` 对象。它只解释已知但未编写的关系目标，不伪造正式页面。默认页和正常侧栏 link 必须指向注册页面。页面唯一 ID 与剧情 `archiveId` 是不同概念。
+
+## 派生数据，不重复录入
+
+同一个事实只应写一次。以下内容由页面 JSON 推导，而不是人工维护；手写副本正是缺陷来源——历史上的重复 `archiveId`、大量只有单侧的关联、信息框「编号」与 `archiveId` 各写一遍，都属于这一类。
+
+- **反向链接**：`graph.js` 反转关系图，页面底部的「被引用」列出所有指向本页的声明，包括对方单方面写下的那些。渲染与校验共用同一份推导，两侧不会出现分歧。
+- **编号前缀**：`AZ-<前缀>-###` 的前缀由分类在 `wiki-config.json` 的 `archivePrefix` 声明；脚手架按分类派生下一个空号，校验器检查格式与唯一性。
+- **分类祖先链**：`--category organizations` 自动写入 `entities → organizations`。
+- **信息框派生字段**：`{ "label": "编号", "auto": "archiveId" }` 渲染时读取页面编号，不再复制字符串。
+
+`plannedPages` 是唯一仍需手写的"未来关系"声明，因为计划条目没有 JSON 文件来承载自己的父级。父级冲突（同一页面被两个页面声明为下属）报告为警告而非错误：本设定中"位于该区域内"与"由该组织管辖"是不同断言，取舍属于编辑决定，不应阻断构建。`npm run graph` 输出全站关系图与上述矛盾清单。
+
+## Markdown 与安全边界
+
+JSON 元数据独立于 Markdown 正文。新正文用普通 Markdown，按需使用 `section`、`warning`、`collapsible`、`timeline`、`breadcrumb` 及少量行内扩展。扩展识别尊重代码块、行内代码和转义，支持正确嵌套，不用全局正则轮番重写已生成 HTML。旧 front matter 仅兼容跳过，不覆盖 JSON。
+
+marked 解析 Markdown；解析器返回的 HTML **不是可信输出**。DOMPurify 在渲染注入边界净化正文、手写面包屑和允许富文本的信息框；普通元数据使用文本/安全属性赋值。链接协议、事件属性、危险标签不能借助自定义扩展绕过净化。DOM 净化防 XSS，不提供内容保密。
+
+标题锚点来自文本并处理重复标题；目录与内容由同一次解析生成。时间线基于独立粗体日期行，保留条目中的多段与列表。warning 首行为标签，后续正文继续走 Markdown。详细语法见 [PAGE-GUIDE.md](PAGE-GUIDE.md)。
+
+## 本地工具与产物
+
+- `dev.mjs`：HTTP 仅监听 `127.0.0.1:4173`，支持 `--port`、`--dir`、`--base`。固定站点路由白名单、显式 MIME、`nosniff`；拒绝点段、编码分隔符、符号链接、Windows 路径别名和大小写错误；不提供目录浏览。
+- `validate.mjs`：校验类型、真实日期、唯一 ID、存在且精确匹配的路径、注册表/默认页、分类树、关系、侧栏和扩展配对。重复 `archiveId` 一律报错，没有例外名单；`archiveId` 还须匹配其分类声明的 `archivePrefix`。跨页结构（自指、上级环、父级冲突）由 `graph.js` 的审计补充，单看一个文件看不出这些。
+- `graph.mjs`：读取全部页面记录并打印关系图——编号序列、父级冲突、可删除的重复声明、单向声明、孤立页面。这就是"能读取所有关系"的那个全局视图。
+- `new-page.mjs`：独占创建 JSON/Markdown、登记 registry、防覆盖与创建锁；按分类派生 `archiveId` 与祖先分类链。不会自动创造剧情内容。
+- `build.mjs`：先校验，再复制受限站点白名单到固定 `dist/`，可保留真实 `CNAME`。不发布源文档、测试、工具、依赖目录，不接受任意输出路径作递归删除目标。
+
+vendor 资源随站点发布，运行时不请求 CDN；版本由 npm 包锁及 vendor 一致性检查约束。依赖安装统一 `npm ci`，仓库只维护 `package-lock.json`，Bun 可作为命令运行器但不是第二套锁文件来源。
+
+## 验证与发布
+
+Node 单元测试覆盖 parser/数据/工具逻辑，临时目录测试覆盖危险路径、无覆盖写入、坏元数据及部署白名单。浏览器测试负责实际导航、交互、净化与子路径行为。自动化成功与否以运行输出为准，设计文档不宣称某浏览器或 CI 已通过。
+
+GitHub Actions 在 PR、main push、手工触发上运行 `npm ci`、仓库检查、浏览器回归与构建；只有 main 非 PR 且检查通过才上传 `dist/` 并进入部署 job。PR 只读；`pages: write`/`id-token: write` 限制在部署 job。工作流采用已知官方 Action 主版本，未联网核验和未实际远程部署的限制见 [Known issues](CONTRIBUTING.md#known-issues)。

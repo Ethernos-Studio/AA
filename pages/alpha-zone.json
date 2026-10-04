@@ -16,7 +16,7 @@
   "infobox": {
     "title": "Territory Profile",
     "fields": [
-      { "label": "编号", "value": "AZ-LOC-001" },
+      { "label": "编号", "auto": "archiveId" },
       { "label": "别名", "value": "阿尔法战区 / 黑域（Black Domain）" },
       { "label": "状态", "value": "<span class='highlight'>封锁 / 无人认领 / 无主权</span>" },
       { "label": "形成日期", "value": "2028年12月1日" },
